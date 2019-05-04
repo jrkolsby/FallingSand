@@ -1,17 +1,12 @@
 /*
- * Avalon memory-mapped peripheral that generates VGA
+ * Avalon memory-mapped peripheral that renders to VGA
  *
  * Stephen A. Edwards
  * Columbia University
  */
 
-module vga_ball(input logic        clk,
-	        input logic 	   reset,
-		input logic [7:0]  writedata,
-		input logic 	   write,
-		input 		   chipselect,
-		input logic [3:0]  address,
-
+module vga_render(input logic clk,
+		input logic reset,
 		output logic [7:0] VGA_R, VGA_G, VGA_B,
 		output logic 	   VGA_CLK, VGA_HS, VGA_VS,
 		                   VGA_BLANK_n,
@@ -19,26 +14,9 @@ module vga_ball(input logic        clk,
 
    logic [10:0]	   hcount;
    logic [9:0]     vcount;
-
-   logic [7:0] 	   background_r, background_g, background_b, ball_x, ball_y;
 	
+   /* This sets hcount and vcount */
    vga_counters counters(.clk50(clk), .*);
-
-   always_ff @(posedge clk)
-     if (reset) begin
-	background_r <= 8'h0;
-	background_g <= 8'h40;
-	background_b <= 8'h80;
-	ball_x <= 8'h4;
-	ball_y <= 8'h4;
-     end else if (chipselect && write)
-       case (address)
-	 3'h0 : background_r <= writedata;
-	 3'h1 : background_g <= writedata;
-	 3'h2 : background_b <= writedata;
-	 3'h3 : ball_x <= writedata;
-	 3'h4 : ball_y <= writedata;
-       endcase
 
    always_comb begin
       {VGA_R, VGA_G, VGA_B} = {8'h0, 8'h0, 8'h0};
