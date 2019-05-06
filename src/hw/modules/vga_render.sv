@@ -5,27 +5,36 @@
  * Columbia University
  */
 
-module vga_render(input logic clk,
+module vga_render(
+		input logic clk,
 		input logic reset,
+
+		output logic [22:0] address,
+		output logic read,
+		input logic [7:0] readdata,
+
 		output logic [7:0] VGA_R, VGA_G, VGA_B,
 		output logic VGA_CLK, VGA_HS, VGA_VS, VGA_BLANK_n,
 		output logic VGA_SYNC_n);
 
    logic [10:0]	hcount;
    logic [9:0] vcount;
+
+   logic [7:0] background_r, background_g, background_b;
 	
-   /* This sets hcount and vcount */
+   // This sets hcount and vcount
    vga_counters counters(.clk50(clk), .*);
 
    always_ff @(posedge clk)
      if (reset) begin
-	/* default values
+	// set default values
 	background_r <= 8'h99;
 	background_g <= 8'h99;
 	background_b <= 8'h99;
      end
 
    always_comb begin
+    // set outputs
     {VGA_R, VGA_G, VGA_B} = {background_r, background_g, background_b};
    end
 	       
@@ -50,48 +59,6 @@ module vga_counters(
  * |____|       VGA_HS          |____|
  * 
  *
-1080 VGA PARAMETERS
-
-Name        1920x1080p60 
-Standard      SMPTE 274M
-VIC                   16
-Short Name         1080p
-Aspect Ratio        16:9
-
-Pixel Clock        148.5 MHz
-TMDS Clock       1,485.0 MHz
-Pixel Time           6.7 ns ±0.5%
-Horizontal Freq.  67.500 kHz
-Line Time           14.8 μs
-Vertical Freq.    60.000 Hz
-Frame Time          16.7 ms
-
-Horizontal Timings
-Active Pixels       1920
-Front Porch           88
-Sync Width            44
-Back Porch           148
-Blanking Total       280
-Total Pixels        2200
-Sync Polarity        pos
-
-Vertical Timings
-Active Lines        1080
-Front Porch            4
-Sync Width             5
-Back Porch            36
-Blanking Total        45
-Total Lines         1125
-Sync Polarity        pos
-
-Active Pixels  2,073,600
-Data Rate           3.56 Gbps
-
-Frame Memory (Kbits)
- 8-bit Memory     16,200
-12-bit Memory     24,300
-24-bit Memory     48,600
-32-bit Memory     64,800
  */
    // Parameters for hcount
    parameter HACTIVE      = 11'd 1280,

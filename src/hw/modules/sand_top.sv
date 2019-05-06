@@ -1,5 +1,7 @@
 module sand_top(input [3:0] KEY,
-
+		
+		/*
+		// SLAVE FROM RAM
 		input [12:0] DRAM_ADDR,
 		input [1:0] DRAM_BA,
 		input DRAM_CAS_N,
@@ -11,9 +13,12 @@ module sand_top(input [3:0] KEY,
 		input DRAM_RAS_N,
 		input DRAM_UDQM,
 		input DRAM_WE_N,
+		*/
 
 		input logic reset,
 		input logic clock,
+
+		// SLAVE TO HPS
 		input logic write, 		// write enable
 		input logic [7:0] writedata,	// writedata
 		input chipselect,		// chipselect
@@ -27,13 +32,13 @@ module sand_top(input [3:0] KEY,
     logic [17:0] kernel_buffer;
 
     always_ff @(posedge clock) begin
-	/* Default values on reset */
+	// Default values on reset
 	if (reset) begin
 	    write_x <= 8'h0;
 	    write_y <= 8'h0;
 	    write_radius <= 8'h0;
 	    write_type <= 2'h0;
-	/* if chipselect, write to local memory */
+	// if chipselect, write to local memory
 	end else if (chipselect && write)
 	    case (address)
 		3'h0 : write_x <= writedata;

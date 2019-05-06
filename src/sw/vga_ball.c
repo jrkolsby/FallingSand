@@ -33,7 +33,7 @@
 #include <linux/uaccess.h>
 #include "vga_ball.h"
 
-#define DRIVER_NAME "vga_ball"
+#define DRIVER_NAME "sand_top"
 
 /* Device registers */
 #define BG_RED(x) (x)
@@ -181,7 +181,7 @@ static int vga_ball_remove(struct platform_device *pdev)
 /* Which "compatible" string(s) to search for in the Device Tree */
 #ifdef CONFIG_OF
 static const struct of_device_id vga_ball_of_match[] = {
-	{ .compatible = "csee4840,vga_ball-1.0" },
+	{ .compatible = "jjtech,sand_top-1.0" },
 	{},
 };
 MODULE_DEVICE_TABLE(of, vga_ball_of_match);
