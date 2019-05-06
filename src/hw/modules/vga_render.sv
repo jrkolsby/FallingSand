@@ -17,19 +17,16 @@ module vga_render(input logic clk,
    /* This sets hcount and vcount */
    vga_counters counters(.clk50(clk), .*);
 
+   always_ff @(posedge clk)
+     if (reset) begin
+	/* default values
+	background_r <= 8'h99;
+	background_g <= 8'h99;
+	background_b <= 8'h99;
+     end
+
    always_comb begin
-      {VGA_R, VGA_G, VGA_B} = {8'h0, 8'h0, 8'h0};
-      if (VGA_BLANK_n )
-	if ((hcount[10:3] >= (ball_x-3) && (ball_x+3) >= hcount[10:3] 
-		&& vcount[9:2] >= (ball_y-3) && (ball_y+3) >= vcount[9:2])
-		|| (hcount[10:3] >= (ball_x-1) && (ball_x+1) >= hcount[10:3]
-		&& vcount[9:2] >= (ball_y-4) && (ball_y+4) >= vcount[9:2])
-                || (hcount[10:3] >= (ball_x-4) && (ball_x+4) >= hcount[10:3]
-                && vcount[9:2] >= (ball_y-1) && (ball_y+1) >= vcount[9:2])) 
-	  {VGA_R, VGA_G, VGA_B} = {8'h16, 8'h37, 8'h92};
-	else
-	  {VGA_R, VGA_G, VGA_B} =
-             {background_r, background_g, background_b};
+    {VGA_R, VGA_G, VGA_B} = {background_r, background_g, background_b};
    end
 	       
 endmodule
