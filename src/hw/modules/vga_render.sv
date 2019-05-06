@@ -11,6 +11,7 @@ module vga_render(
 
 		output logic [22:0] address,
 		output logic read,
+		input logic waitrequest,
 		input logic [7:0] readdata,
 
 		output logic [7:0] VGA_R, VGA_G, VGA_B,
