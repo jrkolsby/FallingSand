@@ -38,6 +38,14 @@
          type = "boolean";
       }
    }
+   element sand_update
+   {
+      datum _sortIndex
+      {
+         value = "5";
+         type = "int";
+      }
+   }
    element sdram
    {
       datum _sortIndex
@@ -692,6 +700,7 @@
   <parameter name="use_default_mpu_clk" value="true" />
  </module>
  <module name="sand_top" kind="sand_top" version="1.0" enabled="1" />
+ <module name="sand_update" kind="sand_update" version="1.0" enabled="1" />
  <module
    name="sdram"
    kind="altera_avalon_new_sdram_controller"
@@ -734,6 +743,15 @@
  <connection
    kind="avalon"
    version="18.1"
+   start="sand_update.avalon_master"
+   end="sdram.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
    start="hps_0.h2f_lw_axi_master"
    end="sand_top.avalon_slave_0">
   <parameter name="arbitrationPriority" value="1" />
@@ -743,6 +761,7 @@
  <connection kind="clock" version="18.1" start="clk_0.clk" end="sdram.clk" />
  <connection kind="clock" version="18.1" start="clk_0.clk" end="sand_top.clock" />
  <connection kind="clock" version="18.1" start="clk_0.clk" end="vga_render.clock" />
+ <connection kind="clock" version="18.1" start="clk_0.clk" end="sand_update.clock" />
  <connection
    kind="clock"
    version="18.1"
@@ -769,6 +788,11 @@
    version="18.1"
    start="clk_0.clk_reset"
    end="vga_render.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="clk_0.clk_reset"
+   end="sand_update.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

@@ -1,3 +1,4 @@
 usr/
 build/
 src/hw/soc_system/
+src/hw/.qsys_edit/
