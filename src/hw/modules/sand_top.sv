@@ -22,7 +22,7 @@ module sand_top(input logic  CLOCK_50,
     logic [7:0] write_x, write_y, write_radius;
     logic [1:0] write_type;
 
-    logic [17:0] kernel_buffer;
+    logic [17:0] region_buffer;
 
     always_ff @(posedge clk) begin
 	/* Default values on reset */
