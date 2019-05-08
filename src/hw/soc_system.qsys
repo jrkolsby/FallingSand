@@ -25,13 +25,39 @@
          type = "int";
       }
    }
-   element new_sdram_controller_0
+   element sand_top
    {
       datum _sortIndex
       {
          value = "2";
          type = "int";
       }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
+      }
+   }
+   element sand_update
+   {
+      datum _sortIndex
+      {
+         value = "5";
+         type = "int";
+      }
+   }
+   element sdram
+   {
+      datum _sortIndex
+      {
+         value = "3";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
+      }
    }
    element soc_system
    {
@@ -47,6 +73,67 @@
       {
          value = "Cyclone V";
          type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element vga_render
+   {
+      datum _sortIndex
+      {
+         value = "4";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
       }
    }
 }
@@ -71,9 +158,11 @@
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
+ <interface name="dram" internal="sdram.wire" type="conduit" dir="end" />
  <interface name="hps" internal="hps_0.hps_io" type="conduit" dir="end" />
  <interface name="hps_ddr3" internal="hps_0.memory" type="conduit" dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
+ <interface name="vga" internal="vga_render.vga" type="conduit" dir="end" />
  <module name="clk_0" kind="clock_source" version="18.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -610,8 +699,10 @@
   <parameter name="usb_mp_clk_div" value="0" />
   <parameter name="use_default_mpu_clk" value="true" />
  </module>
+ <module name="sand_top" kind="sand_top" version="1.0" enabled="1" />
+ <module name="sand_update" kind="sand_update" version="1.0" enabled="1" />
  <module
-   name="new_sdram_controller_0"
+   name="sdram"
    kind="altera_avalon_new_sdram_controller"
    version="18.1"
    enabled="1">
@@ -624,7 +715,7 @@
   <parameter name="casLatency" value="3" />
   <parameter name="clockRate" value="50000000" />
   <parameter name="columnWidth" value="8" />
-  <parameter name="componentName">$${FILENAME}_new_sdram_controller_0</parameter>
+  <parameter name="componentName" value="$${FILENAME}_sdram" />
   <parameter name="dataWidth" value="16" />
   <parameter name="generateSimulationModel" value="false" />
   <parameter name="initNOPDelay" value="0.0" />
@@ -639,11 +730,38 @@
   <parameter name="registerDataIn" value="true" />
   <parameter name="rowWidth" value="12" />
  </module>
+ <module name="vga_render" kind="vga_render" version="1.0" enabled="1" />
  <connection
-   kind="clock"
+   kind="avalon"
    version="18.1"
-   start="clk_0.clk"
-   end="new_sdram_controller_0.clk" />
+   start="vga_render.avalon_master"
+   end="sdram.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="sand_update.avalon_master"
+   end="sdram.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="hps_0.h2f_lw_axi_master"
+   end="sand_top.avalon_slave_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="clock" version="18.1" start="clk_0.clk" end="sdram.clk" />
+ <connection kind="clock" version="18.1" start="clk_0.clk" end="sand_top.clock" />
+ <connection kind="clock" version="18.1" start="clk_0.clk" end="vga_render.clock" />
+ <connection kind="clock" version="18.1" start="clk_0.clk" end="sand_update.clock" />
  <connection
    kind="clock"
    version="18.1"
@@ -659,11 +777,22 @@
    version="18.1"
    start="clk_0.clk"
    end="hps_0.h2f_lw_axi_clock" />
+ <connection kind="reset" version="18.1" start="clk_0.clk_reset" end="sdram.reset" />
  <connection
    kind="reset"
    version="18.1"
    start="clk_0.clk_reset"
-   end="new_sdram_controller_0.reset" />
+   end="sand_top.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="clk_0.clk_reset"
+   end="vga_render.reset" />
+ <connection
+   kind="reset"
+   version="18.1"
+   start="clk_0.clk_reset"
+   end="sand_update.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

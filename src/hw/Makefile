@@ -16,6 +16,7 @@ DTB = $(SYSTEM).dtb
 
 SOF = output_files/$(SYSTEM).sof
 RBF = output_files/$(SYSTEM).rbf
+BUILD = build
 
 SOFTWARE_DIR = software
 
@@ -43,13 +44,22 @@ TARFILES = Makefile \
 	$(BOARD_INFO) \
 	ip/intr_capturer/intr_capturer.v \
 	ip/intr_capturer/intr_capturer_hw.tcl \
-	vga_ball.sv
+	modules/*
 
-TARFILE = lab3-hw.tar.gz
+TARFILE = fallingsand.tar.gz
 
 # project
 #
 # Run the topmost tcl script to generate the initial project files
+
+.PHONY : build
+build : $(BUILD)
+	
+$(BUILD) : $(RBF) $(DTB)
+	mkdir $(BUILD)
+	mv $(RBF) $(BUILD)
+	mv $(DTB) $(BUILD)
+
 
 .PHONY : project
 project : $(QPF) $(QSF) $(SDC)
@@ -200,16 +210,6 @@ $(KERNEL_CONFIG) : $(KERNEL_DIR)
 
 $(ZIMAGE) : $(KERNEL_CONFIG)
 	$(CROSS) $(MAKE) -C $(KERNEL_DIR) LOCALVERSION= zImage
-
-# tar
-#
-# Build soc_system.tar.gz
-
-.phony : tar
-tar : $(TARFILE)
-
-$(TARFILE) : $(TARFILES)
-	tar zcfC $(TARFILE) .. $(TARFILES:%=lab3-hw/%)
 
 # clean
 #
