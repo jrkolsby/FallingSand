@@ -12,6 +12,8 @@ module sand_update(
     logic [7:0] hcount;
     logic [7:0] vcount;
 
+    logic [17:0] particle_kernel;
+
 /*
     always_ff @(posedge clk) begin
 	logic addr = scene_addr

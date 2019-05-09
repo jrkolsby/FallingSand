@@ -16,6 +16,11 @@
          value = "0";
          type = "int";
       }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
+      }
    }
    element hps_0
    {
@@ -23,6 +28,11 @@
       {
          value = "1";
          type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
       }
    }
    element sand_top
@@ -38,12 +48,30 @@
          type = "boolean";
       }
    }
+   element sand_top.avalon_slave_0
+   {
+      datum _lockedAddress
+      {
+         value = "0";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "0";
+         type = "String";
+      }
+   }
    element sand_update
    {
       datum _sortIndex
       {
          value = "5";
          type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
       }
    }
    element sdram
@@ -57,6 +85,19 @@
       {
          value = "1";
          type = "boolean";
+      }
+   }
+   element sdram.s1
+   {
+      datum _lockedAddress
+      {
+         value = "0";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "0";
+         type = "String";
       }
    }
    element soc_system
@@ -150,7 +191,7 @@
  <parameter name="hideFromIPCatalog" value="false" />
  <parameter name="lockedInterfaceDefinition" value="" />
  <parameter name="maxAdditionalLatency" value="1" />
- <parameter name="projectName" value="" />
+ <parameter name="projectName" value="soc_system.qpf" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="0" />
  <parameter name="testBenchDutName" value="" />
@@ -700,7 +741,7 @@
   <parameter name="use_default_mpu_clk" value="true" />
  </module>
  <module name="sand_top" kind="sand_top" version="1.0" enabled="1" />
- <module name="sand_update" kind="sand_update" version="1.0" enabled="1" />
+ <module name="sand_update" kind="sand_update" version="1.0" enabled="0" />
  <module
    name="sdram"
    kind="altera_avalon_new_sdram_controller"
@@ -734,15 +775,6 @@
  <connection
    kind="avalon"
    version="18.1"
-   start="vga_render.avalon_master"
-   end="sdram.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="18.1"
    start="sand_update.avalon_master"
    end="sdram.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -754,6 +786,15 @@
    version="18.1"
    start="hps_0.h2f_lw_axi_master"
    end="sand_top.avalon_slave_0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="18.1"
+   start="vga_render.sdram_master"
+   end="sdram.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
