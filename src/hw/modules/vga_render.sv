@@ -13,6 +13,7 @@ module vga_render(
 	output logic [23:0] mem_address,
 	output logic mem_read,
 	input logic mem_waitrequest,
+	input logic mem_readdatavalid,
 	input logic [31:0] mem_readdata,
 
 	// GLOBALS WIRE
@@ -34,44 +35,44 @@ module vga_render(
 	    WATER_C	= 24'h0000FF,   
 	    WALL_C	= 24'h333333;
 
-    logic [31:0] read_buf;
+    logic [15:0] read_buf;
 
     logic screen_toggle;	// 1 if screen_a_ptr
     logic mem_reading;		// 1 if waiting
+    logic [16:0] mem_block;	// which block are we on?
     logic [10:0] screen_x;	// current x of render
     logic [9:0] screen_y;	// current y of render
 
-    // outputs screen_x, screen_y, end_of_screen
+    // outputs screen_x, screen_y
     vga_counters counters(.clk50(clock), .*);
-
-    assign logic [22:0] addr = screen_x + screen_y * 2
 
     always_ff @(posedge clock) begin
 
+	// GET
+	if (screen_x % 4 == 0)
+	    mem_block <= mem_block + 17'd1;
+	    
 	// RESET DEFAULT VALUES
 	if (reset) begin
 	    mem_reading <= 1'b0;
 	    mem_address <= 24'h000000;
+	    mem_block <= 17'd0;
 
-	// READ FROM SDRAM (8B)
+	// READ FROM SDRAM (2B)
 	end else if (mem_reading & mem_readdatavalid) begin
 	    read_buf <= mem_readdata;
 	    mem_reading <= 1'b0;
 
 	// START NEW READ FROM SDRAM
 	end else if (mem_waitrequest == 1'b0) begin
-	    mem_reading <= mem_reading | 1'b1;
-
-	end else if (end_of_screen) begin
-	    screen_toggle <= !screen_toggle; 
-
+	    mem_address <= mem_block;
+	    mem_reading <= 1'b1;
+	end
     end
 
     always_comb begin
 	// set outputs depending on screen_x and screen_y
 	mem_read = mem_reading == 1'b0;
-	mem_address = (screen_toggle ? screen_ptr_a : screen_ptr_b) + 
-	    (screen_y * 11'd1280 + screen_x * 2) % 32;
 	if (screen_x - write_x <= write_radius)
 	    case (write_t)
 		2'h0 : {VGA_R, VGA_G, VGA_B} = EMPTY_C;
@@ -80,8 +81,7 @@ module vga_render(
 		2'h3 : {VGA_R, VGA_G, VGA_B} = WALL_C;
 	    endcase
 	else 
-	    {VGA_R, VGA_G, VGA_B} = read_buf + 
-	    
+	    {VGA_R, VGA_G, VGA_B} = {8'd0, 8'd0, read_buf[7:0]}; 
     end
 
 endmodule
@@ -90,7 +90,6 @@ module vga_counters(
     input logic clk50, reset,
     output logic [10:0] screen_x,  // screen_x[10:1] is pixel column
     output logic [9:0]  screen_y,  // screen_y[9:0] is pixel row
-    output logic end_of_screen,
     output logic VGA_CLK, VGA_HS, VGA_VS, VGA_BLANK_n, VGA_SYNC_n);
 
 /*
@@ -111,7 +110,7 @@ module vga_counters(
     parameter HACTIVE      = 11'd1280,
 	    HFRONT_PORCH = 11'd32,
 	    HSYNC        = 11'd192,
-	    HBACK_PORCH  = 11'd96,   
+	    HBACK_PORCH  = 11'd96,
 	    HTOTAL       = HACTIVE + HFRONT_PORCH + HSYNC +
 			    HBACK_PORCH; // 1600
    
@@ -131,8 +130,6 @@ module vga_counters(
 	else screen_x <= screen_x + 11'd1;
 
     assign end_of_line = screen_x == HTOTAL - 1;
-       
-    logic end_of_screen;
    
     always_ff @(posedge clk50 or posedge reset)
 	if (reset) screen_y <= 0;

@@ -48,19 +48,6 @@
          type = "boolean";
       }
    }
-   element sand_top.avalon_slave_0
-   {
-      datum _lockedAddress
-      {
-         value = "0";
-         type = "boolean";
-      }
-      datum baseAddress
-      {
-         value = "0";
-         type = "String";
-      }
-   }
    element sand_update
    {
       datum _sortIndex
@@ -70,7 +57,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -97,6 +84,22 @@
       datum baseAddress
       {
          value = "0";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
          type = "String";
       }
    }
@@ -771,7 +774,12 @@
   <parameter name="registerDataIn" value="true" />
   <parameter name="rowWidth" value="12" />
  </module>
- <module name="vga_render" kind="vga_render" version="1.0" enabled="1" />
+ <module name="vga_render" kind="vga_render" version="1.0" enabled="1">
+  <parameter name="EMPTY_C" value="16777215" />
+  <parameter name="SAND_C" value="10040064" />
+  <parameter name="WALL_C" value="3355443" />
+  <parameter name="WATER_C" value="255" />
+ </module>
  <connection
    kind="avalon"
    version="18.1"
@@ -785,7 +793,7 @@
    kind="avalon"
    version="18.1"
    start="hps_0.h2f_lw_axi_master"
-   end="sand_top.avalon_slave_0">
+   end="sand_top.kernel">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
