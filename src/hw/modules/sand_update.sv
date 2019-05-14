@@ -2,6 +2,7 @@ module sand_update(
 	input logic screenbegin,
 	input logic screenend,
 	input logic screenbottom,
+	input logic spout,
 	input logic [31:0] region,
 	input logic [31:0] floor,
 	output logic [31:0] new_region,
