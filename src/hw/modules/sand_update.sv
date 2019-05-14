@@ -13,8 +13,6 @@ module sand_update(
 	logic[1:0] ro[15:0];
 	logic[1:0] fo[15:0];
 	
-	logic shift;
-	logic[2:0] spoutform;
 	logic[3:0] i;
 	logic[4:0] k;
 	
@@ -22,15 +20,6 @@ module sand_update(
 		SAND	= 2'b01,
 		SAND_AM	= 2'b10,
 		WALL	= 2'b11;
-	
-	parameter[7:0] spoutseq[7:0] = '{8'b00000000, 
-					8'b00000000, 
-					8'b00000000, 
-					8'b00000000, 
-					8'b00000000, 
-					8'b00000000, 
-					8'b00000000, 
-					8'b00000000};
 	
 	assign ri[15] = region[31:30];
 	assign ri[14] = region[29:28];
@@ -67,8 +56,6 @@ module sand_update(
 	assign fi[0] = floor[1:0];
 	
 	always_comb begin
-		shift = 0;
-		spoutform = 3'b000;
 		//FIRST PIXEL IN ROW
 		if (screenbegin) begin
 			if (ri[15] == SAND) begin
@@ -95,7 +82,7 @@ module sand_update(
 					if (fi[i] == AIR) begin
 						ro[i] = AIR;
 						fo[i] = SAND_AM;
-					end else if ((fi[i-1] == AIR) && (fi[i+1] == AIR)) begin
+					end else if ((fi[i-1] == AIR) && (fi[i+1] == AIR)) begin/////////////////////////
 						if (shift) begin
 							ro[i] = AIR;
 							fo[i-1] = SAND_AM;
@@ -108,7 +95,7 @@ module sand_update(
 							fo[i] = fi[i];
 							fo[i-1] = fi[i-1];
 							shift = !shift;
-						end
+						end/////////////////////////////////////////
 					end else if (fi[i-1] == AIR) begin
 						ro[i] = AIR;
 						fo[i-1] = SAND_AM;
@@ -146,7 +133,7 @@ module sand_update(
 					if (fi[i] == AIR) begin
 						ro[i] = AIR;
 						fo[i] = SAND_AM;
-					end else if ((fi[i-1] == AIR) && (fi[i+1] == AIR)) begin
+					end else if ((fi[i-1] == AIR) && (fi[i+1] == AIR)) begin//////////////////////////
 						if (shift) begin
 							ro[i] = AIR;
 							fo[i-1] = SAND_AM;
@@ -159,7 +146,7 @@ module sand_update(
 							fo[i] = fi[i];
 							fo[i-1] = fi[i-1];
 							shift = !shift;
-						end
+						end//////////////////////////////////////////
 					end else if (fi[i-1] == AIR) begin
 						ro[i] = AIR;
 						fo[i-1] = SAND_AM;
@@ -209,8 +196,7 @@ module sand_update(
 		
 		//SPOUT BLOCK
 		if (spout) begin
-			new_region[8:1] = spoutseq[spoutform];
-			spoutform = spoutform+1;
+			new_region[8:1] = 8'b11111111;
 		end
 	end
 endmodule
