@@ -82,8 +82,8 @@ module sand_update(
 					if (fi[i] == AIR) begin
 						ro[i] = AIR;
 						fo[i] = SAND_AM;
-					end else if ((fi[i-1] == AIR) && (fi[i+1] == AIR)) begin/////////////////////////
-						if (shift) begin
+					end else if ((fi[i-1] == AIR) && (fi[i+1] == AIR)) begin
+						if (i%2) begin
 							ro[i] = AIR;
 							fo[i-1] = SAND_AM;
 							fo[i] = fi[i];
@@ -95,7 +95,7 @@ module sand_update(
 							fo[i] = fi[i];
 							fo[i-1] = fi[i-1];
 							shift = !shift;
-						end/////////////////////////////////////////
+						end
 					end else if (fi[i-1] == AIR) begin
 						ro[i] = AIR;
 						fo[i-1] = SAND_AM;
@@ -133,8 +133,8 @@ module sand_update(
 					if (fi[i] == AIR) begin
 						ro[i] = AIR;
 						fo[i] = SAND_AM;
-					end else if ((fi[i-1] == AIR) && (fi[i+1] == AIR)) begin//////////////////////////
-						if (shift) begin
+					end else if ((fi[i-1] == AIR) && (fi[i+1] == AIR)) begin
+						if (i%2) begin
 							ro[i] = AIR;
 							fo[i-1] = SAND_AM;
 							fo[i] = fi[i];
@@ -146,7 +146,7 @@ module sand_update(
 							fo[i] = fi[i];
 							fo[i-1] = fi[i-1];
 							shift = !shift;
-						end//////////////////////////////////////////
+						end
 					end else if (fi[i-1] == AIR) begin
 						ro[i] = AIR;
 						fo[i-1] = SAND_AM;
