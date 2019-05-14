@@ -194,5 +194,8 @@ module sand_update(
 			new_region[15:2] = 14'b01010101010101;
 		if(screenbottom) 
 			new_floor[31:0] = 32'b11111111111111111111111111111111;
+		//
+		new_region = 32'b11111111111111111111111111111111;
+		new_floor = 32'b11111111111111111111111111111111;
 	end
 endmodule
