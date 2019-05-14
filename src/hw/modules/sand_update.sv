@@ -12,6 +12,11 @@ module sand_update(
 	logic[1:0] ro[15:0];
 	logic[1:0] fo[15:0];
 	
+	parameter AIR 	= 2'b00,
+		SAND	= 2'b01,
+		SAND_AM	= 2'b10,
+		WALL	= 2'b11;
+	
 	assign ri[15] = region[31:30];
 	assign ri[14] = region[29:28];
 	assign ri[13] = region[27:26];
@@ -46,53 +51,32 @@ module sand_update(
 	assign fi[1] = floor[3:2];
 	assign fi[0] = floor[1:0];
 	
-	assign new_region[31:30] = ro[15];
-	assign new_region[29:28] = ro[14];
-	assign new_region[27:26] = ro[13];
-	assign new_region[25:24] = ro[12];
-	assign new_region[23:22] = ro[11];
-	assign new_region[21:20] = ro[10];
-	assign new_region[19:18] = ro[9];
-	assign new_region[17:16] = ro[8];
-	assign new_region[15:14] = ro[7];
-	assign new_region[13:12] = ro[6];
-	assign new_region[11:10] = ro[5];
-	assign new_region[9:8] = ro[4];
-	assign new_region[7:6] = ro[3];
-	assign new_region[5:4] = ro[2];
-	assign new_region[3:2] = ro[1];
-	assign new_region[1:0] = ro[0];
-	
-	assign new_floor[31:30] = fo[15];
-	assign new_floor[29:28] = fo[14];
-	assign new_floor[27:26] = fo[13];
-	assign new_floor[25:24] = fo[12];
-	assign new_floor[23:22] = fo[11];
-	assign new_floor[21:20] = fo[10];
-	assign new_floor[19:18] = fo[9];
-	assign new_floor[17:16] = fo[8];
-	assign new_floor[15:14] = fo[7];
-	assign new_floor[13:12] = fo[6];
-	assign new_floor[11:10] = fo[5];
-	assign new_floor[9:8] = fo[4];
-	assign new_floor[7:6] = fo[3];
-	assign new_floor[5:4] = fo[2];
-	assign new_floor[3:2] = fo[1];
-	assign new_floor[1:0] = fo[0];
-	
-	always @(docalculations) begin
-		for (i=8; i>0; i=i-1) begin
-			if (screenbegin) begin//leftmost pixel in row
-			
+	always_comb begin
+		if (screenbegin) begin //leftmost pixel in row
+			if (ri[15] == SAND) begin
+				if (fi[15] == AIR) begin
+					ro[15] = AIR;
+					fo[15] = SAND_AM;
+				end else if (fi[14] == AIR) begin
+					ro[15] = AIR;
+					fo[15] = fi[15];
+					fo[14] = SAND_AM;
+				end else begin
+					ro[15] = ri[15];
+					fo[15] = fi[15];
+				end
 			end
-			
-			else if (screenend) begin//rightmost pixel in row
 				
-			end
-			
-			else begin//middle pixels
-			
-			end
+			else if (ri[15] == SAND_AM) //
+				ro[15] = SAND;
+		end
+		
+		for (i=15; i>0; i=i-1) begin
+
+		end
+		
+		else if (screenend) begin//rightmost pixel in row
+				
 		end
 	end
 endmodule
