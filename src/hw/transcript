@@ -1,0 +1,419 @@
+# OpenFile ./simulation/sand_top.mpf
+# Loading project sand_top
+# Compile of sand_top.sv was successful.
+# Compile of vga_render.sv was successful.
+# Compile of sand_update.sv was successful.
+# Compile of soc_system_top.sv was successful.
+# 4 compiles, 0 failed with no errors.
+vsim work.sand_top
+# vsim work.sand_top 
+# Start time: 00:43:20 on May 14,2019
+# Loading sv_std.std
+# Loading work.sand_top
+# Loading work.vga_render
+# Loading work.vga_counters
+# Loading work.sand_update
+add wave  \
+sim:/sand_top/state_counter
+add wave  \
+sim:/sand_top/reset \
+sim:/sand_top/clock
+force -freeze sim:/sand_top/clock 1 0, 0 {50 ps} -r 100
+force -freeze sim:/sand_top/reset 1 0 -cancel 1
+run
+quit -sim
+# End time: 00:45:48 on May 14,2019, Elapsed time: 0:02:28
+# Errors: 0, Warnings: 0
+# Load canceled
+# Compile of sand_top.sv was successful.
+# Compile of vga_render.sv was successful.
+# Compile of sand_update.sv was successful.
+# Compile of soc_system_top.sv was successful.
+# 4 compiles, 0 failed with no errors.
+vsim work.sand_top
+# vsim work.sand_top 
+# Start time: 00:46:05 on May 14,2019
+# Loading sv_std.std
+# Loading work.sand_top
+# Loading work.vga_render
+# Loading work.vga_counters
+# Loading work.sand_update
+add wave  \
+sim:/sand_top/reset \
+sim:/sand_top/clock \
+sim:/sand_top/state_counter
+force -freeze sim:/sand_top/clock 1 0, 0 {50 ps} -r 100
+force -freeze sim:/sand_top/clock 1 0, 0 {50 ps} -r 100
+noforce sim:/sand_top/reset
+force -freeze sim:/sand_top/reset 1 0 -cancel 1
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+quit -sim
+# End time: 00:50:15 on May 14,2019, Elapsed time: 0:04:10
+# Errors: 0, Warnings: 0
+# Load canceled
+# Compile of sand_top.sv was successful.
+# Compile of vga_render.sv was successful.
+# Compile of sand_update.sv was successful.
+# Compile of soc_system_top.sv was successful.
+# 4 compiles, 0 failed with no errors.
+vsim work.sand_top
+# vsim work.sand_top 
+# Start time: 00:50:43 on May 14,2019
+# Loading sv_std.std
+# Loading work.sand_top
+# Loading work.vga_render
+# Loading work.vga_counters
+# Loading work.sand_update
+add wave  \
+sim:/sand_top/reset \
+sim:/sand_top/clock \
+sim:/sand_top/mem_address \
+sim:/sand_top/mem_read \
+sim:/sand_top/mem_write \
+sim:/sand_top/mem_waitrequest \
+sim:/sand_top/mem_readdatavalid \
+sim:/sand_top/mem_readdata \
+sim:/sand_top/mem_writedata \
+sim:/sand_top/state_counter
+force -freeze sim:/sand_top/reset 1 0 -cancel 1
+force -freeze sim:/sand_top/clock 1 0, 0 {50 ps} -r 100
+run
+run
+run
+run
+run
+# Compile of sand_top.sv was successful.
+# Compile of vga_render.sv was successful.
+# Compile of sand_update.sv was successful.
+# Compile of soc_system_top.sv was successful.
+# 4 compiles, 0 failed with no errors.
+quit -sim
+# End time: 00:52:42 on May 14,2019, Elapsed time: 0:01:59
+# Errors: 0, Warnings: 0
+# Compile of sand_top.sv was successful.
+# Compile of vga_render.sv was successful.
+# Compile of sand_update.sv was successful.
+# Compile of soc_system_top.sv was successful.
+# 4 compiles, 0 failed with no errors.
+vsim work.sand_top
+# vsim work.sand_top 
+# Start time: 00:52:52 on May 14,2019
+# Loading sv_std.std
+# Loading work.sand_top
+# Loading work.vga_render
+# Loading work.vga_counters
+# Loading work.sand_update
+add wave  \
+sim:/sand_top/reset \
+sim:/sand_top/clock
+add wave  \
+sim:/sand_top/mem_address \
+sim:/sand_top/mem_read \
+sim:/sand_top/mem_write \
+sim:/sand_top/mem_waitrequest \
+sim:/sand_top/mem_readdatavalid \
+sim:/sand_top/mem_readdata \
+sim:/sand_top/mem_writedata \
+sim:/sand_top/state_counter
+add wave  \
+sim:/sand_top/region_address \
+sim:/sand_top/floor_address
+force -freeze sim:/sand_top/reset 1 0 -cancel 1
+force -freeze sim:/sand_top/clock 1 0, 0 {50 ps} -r 100
+run
+run
+run
+run
+run
+run
+run
+run
+# Compile of sand_top.sv was successful.
+# Compile of vga_render.sv was successful.
+# Compile of sand_update.sv was successful.
+# Compile of soc_system_top.sv was successful.
+# 4 compiles, 0 failed with no errors.
+quit -sim
+# End time: 00:54:50 on May 14,2019, Elapsed time: 0:01:58
+# Errors: 0, Warnings: 0
+vsim work.sand_top
+# vsim work.sand_top 
+# Start time: 00:54:58 on May 14,2019
+# Loading sv_std.std
+# Loading work.sand_top
+# Loading work.vga_render
+# Loading work.vga_counters
+# Loading work.sand_update
+add wave  \
+sim:/sand_top/reset \
+sim:/sand_top/clock \
+sim:/sand_top/mem_address \
+sim:/sand_top/mem_read \
+sim:/sand_top/mem_write \
+sim:/sand_top/mem_waitrequest \
+sim:/sand_top/mem_readdatavalid \
+sim:/sand_top/mem_readdata \
+sim:/sand_top/mem_writedata \
+sim:/sand_top/region_address \
+sim:/sand_top/floor_address \
+sim:/sand_top/state_counter
+force -freeze sim:/sand_top/reset 1 0 -cancel 1
+force -freeze sim:/sand_top/clock 1 0, 0 {50 ps} -r 100
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+# WARNING: No extended dataflow license exists
+quit -sim
+# End time: 01:27:18 on May 14,2019, Elapsed time: 0:32:20
+# Errors: 0, Warnings: 1
+vsim work.sand_top
+# vsim work.sand_top 
+# Start time: 01:27:47 on May 14,2019
+# Loading sv_std.std
+# Loading work.sand_top
+# Loading work.vga_render
+# Loading work.vga_counters
+# Loading work.sand_update
+# WARNING: No extended dataflow license exists
+add wave  \
+sim:/sand_top/render/screen_x \
+sim:/sand_top/render/screen_y
+add wave  \
+sim:/sand_top/reset \
+sim:/sand_top/clock \
+sim:/sand_top/mem_address \
+sim:/sand_top/mem_read \
+sim:/sand_top/mem_write \
+sim:/sand_top/mem_waitrequest \
+sim:/sand_top/mem_readdatavalid \
+sim:/sand_top/mem_readdata \
+sim:/sand_top/mem_writedata \
+sim:/sand_top/region_address \
+sim:/sand_top/floor_address \
+sim:/sand_top/state_counter
+force -freeze sim:/sand_top/reset 1 0 -cancel 1
+force -freeze sim:/sand_top/clock 1 0, 0 {50 ps} -r 100
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run -continue
+run -continue
+run -all
+# Break key hit
+# Break in Module vga_counters at /home/james/Documents/Sand/src/hw/modules/vga_render.sv line 116
+run
+# Can't move the Now cursor.
+# Can't move the Now cursor.
+# Can't move the Now cursor.
+# Can't move the Now cursor.
+# Can't move the Now cursor.
+# Can't move the Now cursor.
+quit -sim
+# End time: 02:08:06 on May 14,2019, Elapsed time: 0:40:19
+# Errors: 6, Warnings: 1
+# Compile of sand_top.sv was successful.
+# Compile of vga_render.sv was successful.
+# Compile of sand_update.sv was successful.
+# Compile of soc_system_top.sv was successful.
+# 4 compiles, 0 failed with no errors.
+# Compile of sand_top.sv was successful.
+# Compile of vga_render.sv was successful.
+# Compile of sand_update.sv was successful.
+# Compile of soc_system_top.sv was successful.
+# 4 compiles, 0 failed with no errors.
+vsim work.sand_top
+# vsim work.sand_top 
+# Start time: 02:08:20 on May 14,2019
+# Loading sv_std.std
+# Loading work.sand_top
+# Loading work.vga_render
+# Loading work.vga_counters
+# Loading work.sand_update
+# ** Warning: (vsim-3015) /home/james/Documents/Sand/src/hw/modules/sand_top.sv(57): [PCDPC] - Port size (16) does not match connection size (32) for port 'buffer'. The port definition is at: /home/james/Documents/Sand/src/hw/modules/vga_render.sv(12).
+#    Time: 0 ps  Iteration: 0  Instance: /sand_top/render File: /home/james/Documents/Sand/src/hw/modules/vga_render.sv
+# ** Warning: (vsim-3015) /home/james/Documents/Sand/src/hw/modules/sand_top.sv(62): [PCDPC] - Port size (16) does not match connection size (1) for port 'region'. The port definition is at: /home/james/Documents/Sand/src/hw/modules/sand_update.sv(5).
+#    Time: 0 ps  Iteration: 0  Instance: /sand_top/physics File: /home/james/Documents/Sand/src/hw/modules/sand_update.sv
+# ** Warning: (vsim-3015) /home/james/Documents/Sand/src/hw/modules/sand_top.sv(62): [PCDPC] - Port size (16) does not match connection size (1) for port 'floor'. The port definition is at: /home/james/Documents/Sand/src/hw/modules/sand_update.sv(6).
+#    Time: 0 ps  Iteration: 0  Instance: /sand_top/physics File: /home/james/Documents/Sand/src/hw/modules/sand_update.sv
+# ** Warning: (vsim-3015) /home/james/Documents/Sand/src/hw/modules/sand_top.sv(62): [PCDPC] - Port size (16) does not match connection size (1) for port 'new_region'. The port definition is at: /home/james/Documents/Sand/src/hw/modules/sand_update.sv(8).
+#    Time: 0 ps  Iteration: 0  Instance: /sand_top/physics File: /home/james/Documents/Sand/src/hw/modules/sand_update.sv
+# ** Warning: (vsim-3015) /home/james/Documents/Sand/src/hw/modules/sand_top.sv(62): [PCDPC] - Port size (16) does not match connection size (1) for port 'new_floor'. The port definition is at: /home/james/Documents/Sand/src/hw/modules/sand_update.sv(9).
+#    Time: 0 ps  Iteration: 0  Instance: /sand_top/physics File: /home/james/Documents/Sand/src/hw/modules/sand_update.sv
+# WARNING: No extended dataflow license exists
+add wave  \
+sim:/sand_top/reset \
+sim:/sand_top/clock \
+sim:/sand_top/mem_address \
+sim:/sand_top/mem_read \
+sim:/sand_top/mem_write \
+sim:/sand_top/mem_waitrequest \
+sim:/sand_top/mem_readdatavalid \
+sim:/sand_top/mem_readdata \
+sim:/sand_top/mem_writedata
+force -freeze sim:/sand_top/reset 1 0 -cancel 1
+force -freeze sim:/sand_top/clock 1 0, 0 {50 ps} -r 100
+force -drive sim:/sand_top/mem_readdatavalid 1 0
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+run
+quit -sim
+# End time: 02:16:56 on May 14,2019, Elapsed time: 0:08:36
+# Errors: 0, Warnings: 6

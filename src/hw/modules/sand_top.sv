@@ -32,74 +32,114 @@ module sand_top(
     logic [9:0] write_y;
     logic [1:0] write_t;
 
-    logic screen_select;
+    logic [15:0] region_buffer_a;
+    logic [15:0] region_buffer_b;
+    logic [15:0] floor_buffer_a;
+    logic [15:0] floor_buffer_b;
 
-    logic [31:0] screen_a_ptr;
-    logic [31:0] screen_b_ptr;
+    logic [15:0] new_region_buffer_a;
+    logic [15:0] new_region_buffer_b;
+    logic [15:0] new_floor_buffer_a;
+    logic [15:0] new_floor_buffer_b;
 
-    logic [1:0] cacheselect;
+    logic [23:0] region_address_a; // NEED ONLY SET THIS
+    logic [23:0] region_address_b;
+    logic [23:0] floor_address_a;
+    logic [23:0] floor_address_b;
 
-    logic [1279:0] screen_a_cache;
-    logic [1279:0] screen_b_cache;
-    logic [1279:0] screen_c_cache;
+    assign region_address_b = region_address_a + 24'd1;
+    assign floor_address_a = region_address_a + 24'd80;
+    assign floor_address_b = region_address_b + 24'd80;
 
-    logic [23:0] render_address;
-    logic [23:0] physics_address;
-
-    logic render_flag;
-    logic render_read;
-    logic physics_read;
+    logic [3:0] state_counter;
 
     // SUB MODULES
     vga_render render(
-	.screen_ptr(screen_a_ptr), 
-	.mem_address(render_address),
-	.mem_read(render_read),
+	.buffer({region_buffer_a, region_buffer_b}),
 	.*
     );
+
     sand_update physics(
-	.screen_ptr(screen_b_ptr),
-	.mem_address(physics_address),
-	.mem_read(physics_read),
+	.region(region_buffer), 
+	.floor(floor_buffer),
+	.new_region(new_region_buffer),
+	.new_floor(new_floor_buffer),
 	.*
     );
-
-
-    /* It seems render_flag gets stuck at 1 */
 
     always_ff @(posedge clock) begin
 
 	// RESET
 	if (reset) begin
+	    state_counter <= 5'h0;
 	    write_x <= 10'h0;
 	    write_y <= 9'h0;
 	    write_t <= 2'h0;
-	    render_flag <= 1'b0;
+	    mem_write <= 1'b0;
+	    mem_read <= 1'b0;
+	    mem_writedata <= 16'h0;
+	    region_address_a <= 24'h0;
 
-	// NOT RESET
 	end else begin
+	    case (state_counter)
+		5'd0 : {mem_write, mem_read, mem_address} <=
+		    {1'b0, 1'b1, region_address_a};
 
-	    // VGA READ
-	    if (render_read & render_flag == 0) begin
-		render_flag <= 1'b1;
+		5'd1 : {mem_read} <= {1'b0};
 
-		mem_address <= render_address;
-		mem_read <= 1'b1;
+		5'd2 : {mem_read, mem_address, region_buffer_a} <=
+		    {1'b1, region_address_b, mem_readdatavalid ? 
+			mem_readdata : 16'h0000};
 
-	    end else if (physics_read) begin
-		render_flag <= 1'b0;
+		5'd3 : {mem_read} <= {1'b0};
 
-		mem_address <= physics_address;
-		mem_read <= 1'b1;
+		5'd4 : {mem_read, mem_address, region_buffer_b} <=
+		    {1'b1, floor_address_a, mem_readdatavalid ? 
+			mem_readdata : 16'h0000};
 
-	    // HPS SLAVE WRITE
-	    end else if (kernel_chipselect && kernel_write)
-		case (kernel_address)
-		    3'h0 : write_x <= kernel_writedata[10:0];
-		    3'h1 : write_y <= kernel_writedata[9:0];
-		    3'h2 : write_t <= kernel_writedata[1:0];
-		endcase
-	end 
+		5'd5 : {mem_read} <= {1'b0};
+
+		5'd6 : {mem_read, mem_address, floor_buffer_a} <=
+		    {1'b1, floor_address_b, mem_readdatavalid ? 
+			mem_readdata : 16'h0000};
+
+		5'd7 : {mem_read} <= {1'b0};
+
+		5'd8 : floor_buffer_b <= (mem_readdatavalid ? 
+			mem_readdata : 16'h0000);
+
+		5'd9 : {mem_write, mem_address, mem_writedata} <=
+		    {1'b1, region_address_a, new_region_buffer_a};
+
+		5'd10 : {mem_write} <= {1'b0};
+
+		5'd11 : {mem_write, mem_address, mem_writedata} <=
+		    {1'b1, region_address_b, new_region_buffer_b};
+
+		5'd12 : {mem_write} <= {1'b0};
+
+		5'd13 : {mem_write, mem_address, mem_writedata} <=
+		    {1'b1, floor_address_a, new_floor_buffer_a};
+
+		5'd14 : {mem_write} <= {1'b0};
+
+		5'd15 : {mem_write, mem_address, mem_writedata} <=
+		    {1'b1, floor_address_b, new_floor_buffer_b};
+
+		5'd16 : {mem_write} <= {1'b0};
+
+		5'd17 : {mem_address, mem_writedata} <=
+		    {24'h0, 16'h0};
+
+	    endcase
+
+	    if (state_counter == 5'd31)
+		state_counter <= 5'd0;
+		region_address_a <= region_address_a + 24'h1
+	    else 
+		state_counter <= state_counter + 5'd1;
+
+	end
     end
 
 endmodule

@@ -1,7 +1,7 @@
 /*
- * Avalon master module that reads from SDRAM and writes to VGA
+ * Module that writes to VGA
  *
- * Stephen A. Edwards
+ * James Kolsby and Jeremy Adkins
  * Columbia University
  */
 
@@ -9,21 +9,12 @@ module vga_render(
 	input logic clock,
 	input logic reset,
 
-	// SRAM MASTER
-	output logic [23:0] mem_address,
-	output logic mem_read,
-	input logic mem_waitrequest,
-	input logic mem_readdatavalid,
-	input logic [15:0] mem_readdata,
-
-	// SRAM POINTERS
-	input logic [31:0] screen_ptr,
+	input logic [15:0] buffer,
 
 	// WRITE STATE
 	input logic [10:0] write_x,
 	input logic [9:0] write_y, 
 	input logic [1:0] write_t,
-	input logic [1:0] write_radius,
 	
 	// VGA CONDUIT
 	output logic [7:0] VGA_R, VGA_G, VGA_B,
@@ -36,47 +27,19 @@ module vga_render(
 	    WATER_C	= 24'h0000FF,   
 	    WALL_C	= 24'h333333;
 
-    logic [15:0] pixel_buf;
-
-    logic mem_reading;		// 1 if waiting
-    logic [16:0] mem_block;	// which block are we on?
     logic [10:0] screen_x;	// current x of render
     logic [9:0] screen_y;	// current y of render
 
     // outputs screen_x, screen_y
     vga_counters counters(.clk50(clock), .*);
 
-    logic [1:0] buf_count;
-    assign buf_count = screen_x % 4;
-
-    always_ff @(posedge clock) begin
-
-	// GET
-	if (screen_x > 0 & buf_count == 0)
-	    mem_block <= mem_block + 17'd1;
-	    
-	// RESET DEFAULT VALUES
-	if (reset) begin
-	    mem_reading <= 1'b0;
-	    mem_address <= 24'h000000;
-	    mem_block <= 17'd0;
-
-	// READ FROM SDRAM (2B)
-	end else if (mem_reading & mem_readdatavalid) begin
-	    pixel_buf <= mem_readdata;
-	    mem_reading <= 1'b0;
-
-	// START NEW READ FROM SDRAM
-	end else if (mem_waitrequest == 1'b0) begin
-	    mem_address <= mem_block;
-	    mem_reading <= 1'b1;
-	end
-    end
+    logic [1:0] buffer_index;
+    assign buffer_index = screen_x % 4;
 
     always_comb begin
+
 	// set outputs depending on screen_x and screen_y
-	mem_read = mem_reading == 1'b0;
-	if (screen_x - write_x <= write_radius)
+	if (screen_x == write_x && screen_y == write_y)
 	    case (write_t)
 		2'h0 : {VGA_R, VGA_G, VGA_B} = EMPTY_C;
 		2'h1 : {VGA_R, VGA_G, VGA_B} = SAND_C;
@@ -84,7 +47,7 @@ module vga_render(
 		2'h3 : {VGA_R, VGA_G, VGA_B} = WALL_C;
 	    endcase
 	else 
-	    case (pixel_buf[buf_count])
+	    case (buffer[buffer_index])
 		2'h0 : {VGA_R, VGA_G, VGA_B} = EMPTY_C;
 		2'h1 : {VGA_R, VGA_G, VGA_B} = SAND_C;
 		2'h2 : {VGA_R, VGA_G, VGA_B} = WATER_C;
