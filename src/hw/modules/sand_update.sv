@@ -14,6 +14,7 @@ module sand_update(
 	
 	logic shift;
 	logic[3:0] i;
+	logic[4:0] k;
 	
 	parameter AIR 	= 2'b00,
 		SAND	= 2'b01,
@@ -188,8 +189,8 @@ module sand_update(
 		end
 		
 		for (i=15; i>=0; i=i-1) begin
-			new_region[i*2+1:i*2] = ro[i];
-			new_floor[i*2+1:i*2] = fo[i];
+			new_region[i*2+1 +: 1] = ro[i];
+			new_floor[i*2+1 +: 1] = fo[i];
 		end
 	end
 endmodule
