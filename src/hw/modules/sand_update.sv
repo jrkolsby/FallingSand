@@ -191,7 +191,7 @@ module sand_update(
 		
 		//SPOUT BLOCK
 		if (spout) begin
-			new_region[8:1] = 8'b11111111;
+			new_region[15:2] = 14'b01010101010101;
 		end
 	end
 endmodule
