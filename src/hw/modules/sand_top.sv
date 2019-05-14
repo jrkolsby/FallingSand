@@ -67,7 +67,7 @@ module sand_top(
 
     assign screenend = ((region_address_a + 1) % 80 == 0);
     assign screenbegin = (region_address_a % 80 == 0);
-    assign screenbottom = (region_address_a > 24'd38320)
+    assign screenbottom = (region_address_a > 24'd38320);
 
     /* 
     // Can't set the computation inputs based on VGA. OUT OF SYNC
@@ -160,7 +160,8 @@ module sand_top(
 
 	    if (state_counter == 6'd31) begin
 		state_counter <= 6'd0;
-		region_address_a <= region_address_a + 24'h1;
+		region_address_a <= ((region_address_a + 2) % 80 == 0) ?
+		    region_address_a + 24'h2 : region_address_a + 24'h1;
 	    end else 
 		state_counter <= state_counter + 6'd1;
 
