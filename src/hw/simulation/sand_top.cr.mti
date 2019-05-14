@@ -1,9 +1,10 @@
-/home/james/Documents/Sand/src/hw/modules/sand_update.sv {1 {vlog -work work -sv -stats=none /home/james/Documents/Sand/src/hw/modules/sand_update.sv
+/home/james/Documents/Sand/src/hw/modules/vga_render.sv {1 {vlog -work work -sv -stats=none /home/james/Documents/Sand/src/hw/modules/vga_render.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.6d Compiler 2018.02 Feb 24 2018
--- Compiling module sand_update
+-- Compiling module vga_render
+-- Compiling module vga_counters
 
 Top level modules:
-	sand_update
+	vga_render
 
 } {} {}} /home/james/Documents/Sand/src/hw/soc_system_top.sv {1 {vlog -work work -sv -stats=none /home/james/Documents/Sand/src/hw/soc_system_top.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.6d Compiler 2018.02 Feb 24 2018

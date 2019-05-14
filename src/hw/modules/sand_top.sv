@@ -51,14 +51,14 @@ module sand_top(
     assign floor_address_a = region_address_a + 24'd80;
     assign floor_address_b = region_address_b + 24'd80;
 
-    logic [4:0] state_counter;
+    logic [5:0] state_counter;
 
     logic screenbegin;
     logic screenbottom;
     logic screenend;
     
-    logic [10:0] screen_x;
-    logic [9:0] screen_y;
+    logic [6:0] screen_x;
+    logic [6:0] screen_y;
 
     // SUB MODULES
     vga_render render(
@@ -78,7 +78,7 @@ module sand_top(
 
 	// RESET
 	if (reset) begin
-	    state_counter <= 5'h0;
+	    state_counter <= 6'h0;
 	    write_x <= 10'h0;
 	    write_y <= 9'h0;
 	    write_t <= 2'h0;
@@ -89,62 +89,62 @@ module sand_top(
 
 	end else begin
 	    case (state_counter)
-		5'd0 : {mem_write, mem_read, mem_address} <=
+		6'd0 : {mem_write, mem_read, mem_address} <=
 		    {1'b0, 1'b1, region_address_a};
 
-		5'd1 : {mem_read} <= {1'b0};
+		6'd1 : {mem_read} <= {1'b0};
 
-		5'd2 : {mem_read, mem_address, region_buffer_a} <=
+		6'd2 : {mem_read, mem_address, region_buffer_a} <=
 		    {1'b1, region_address_b, mem_readdatavalid ? 
 			mem_readdata : 16'h0000};
 
-		5'd3 : {mem_read} <= {1'b0};
+		6'd3 : {mem_read} <= {1'b0};
 
-		5'd4 : {mem_read, mem_address, region_buffer_b} <=
+		6'd4 : {mem_read, mem_address, region_buffer_b} <=
 		    {1'b1, floor_address_a, mem_readdatavalid ? 
 			mem_readdata : 16'h0000};
 
-		5'd5 : {mem_read} <= {1'b0};
+		6'd5 : {mem_read} <= {1'b0};
 
-		5'd6 : {mem_read, mem_address, floor_buffer_a} <=
+		6'd6 : {mem_read, mem_address, floor_buffer_a} <=
 		    {1'b1, floor_address_b, mem_readdatavalid ? 
 			mem_readdata : 16'h0000};
 
-		5'd7 : {mem_read} <= {1'b0};
+		6'd7 : {mem_read} <= {1'b0};
 
-		5'd8 : floor_buffer_b <= (mem_readdatavalid ? 
+		6'd8 : floor_buffer_b <= (mem_readdatavalid ? 
 			mem_readdata : 16'h0000);
 
-		5'd9 : {mem_write, mem_address, mem_writedata} <=
+		6'd9 : {mem_write, mem_address, mem_writedata} <=
 		    {1'b1, region_address_a, new_region_buffer_a};
 
-		5'd10 : {mem_write} <= {1'b0};
+		6'd10 : {mem_write} <= {1'b0};
 
-		5'd11 : {mem_write, mem_address, mem_writedata} <=
+		6'd11 : {mem_write, mem_address, mem_writedata} <=
 		    {1'b1, region_address_b, new_region_buffer_b};
 
-		5'd12 : {mem_write} <= {1'b0};
+		6'd12 : {mem_write} <= {1'b0};
 
-		5'd13 : {mem_write, mem_address, mem_writedata} <=
+		6'd13 : {mem_write, mem_address, mem_writedata} <=
 		    {1'b1, floor_address_a, new_floor_buffer_a};
 
-		5'd14 : {mem_write} <= {1'b0};
+		6'd14 : {mem_write} <= {1'b0};
 
-		5'd15 : {mem_write, mem_address, mem_writedata} <=
+		6'd15 : {mem_write, mem_address, mem_writedata} <=
 		    {1'b1, floor_address_b, new_floor_buffer_b};
 
-		5'd16 : {mem_write} <= {1'b0};
+		6'd16 : {mem_write} <= {1'b0};
 
-		5'd17 : {mem_address, mem_writedata} <=
+		6'd17 : {mem_address, mem_writedata} <=
 		    {24'h0, 16'h0};
 
 	    endcase
 
-	    if (state_counter == 5'd31) begin
-		state_counter <= 5'd0;
+	    if (state_counter == 6'd31) begin
+		state_counter <= 6'd0;
 		region_address_a <= region_address_a + 24'h1;
 	    end else 
-		state_counter <= state_counter + 5'd1;
+		state_counter <= state_counter + 6'd1;
 
 	end
     end

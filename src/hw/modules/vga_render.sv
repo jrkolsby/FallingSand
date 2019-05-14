@@ -16,8 +16,8 @@ module vga_render(
 	input logic [9:0] write_y, 
 	input logic [1:0] write_t,
 
-	output logic [10:0] screen_x,
-	output logic [9:0] screen_y,
+	output logic [6:0] screen_x,
+	output logic [6:0] screen_y,
 	
 	// VGA CONDUIT
 	output logic [7:0] VGA_R, VGA_G, VGA_B,
@@ -27,14 +27,13 @@ module vga_render(
 
     parameter EMPTY_C	= 24'hFFFFFF,
 	    SAND_C	= 24'h993300,   
-	    WATER_C	= 24'h0000FF,   
 	    WALL_C	= 24'h333333;
 
     logic [10:0] current_x;	// current x of render
     logic [9:0] current_y;	// current y of render
 
-    assign screen_x = current_x;
-    assign screen_y = current_y;
+    assign screen_x = current_x[10:3];
+    assign screen_y = current_y[9:2];
 
     // outputs screen_x, screen_y
     vga_counters counters(
@@ -53,14 +52,14 @@ module vga_render(
 	    case (write_t)
 		2'h0 : {VGA_R, VGA_G, VGA_B} = EMPTY_C;
 		2'h1 : {VGA_R, VGA_G, VGA_B} = SAND_C;
-		2'h2 : {VGA_R, VGA_G, VGA_B} = WATER_C;
+		2'h2 : {VGA_R, VGA_G, VGA_B} = SAND_C;
 		2'h3 : {VGA_R, VGA_G, VGA_B} = WALL_C;
 	    endcase
 	else 
 	    case (buffer[buffer_index])
 		2'h0 : {VGA_R, VGA_G, VGA_B} = EMPTY_C;
 		2'h1 : {VGA_R, VGA_G, VGA_B} = SAND_C;
-		2'h2 : {VGA_R, VGA_G, VGA_B} = WATER_C;
+		2'h2 : {VGA_R, VGA_G, VGA_B} = SAND_C;
 		2'h3 : {VGA_R, VGA_G, VGA_B} = WALL_C;
 	    endcase
     end
