@@ -14,6 +14,7 @@ module sand_update(
 	logic[1:0] fo[15:0];
 	
 	logic shift;
+	logic[2:0] spoutform;
 	logic[3:0] i;
 	logic[4:0] k;
 	
@@ -21,6 +22,15 @@ module sand_update(
 		SAND	= 2'b01,
 		SAND_AM	= 2'b10,
 		WALL	= 2'b11;
+	
+	parameter[7:0] spoutseq[7:0] = '{8'b00000000, 
+					8'b00000000, 
+					8'b00000000, 
+					8'b00000000, 
+					8'b00000000, 
+					8'b00000000, 
+					8'b00000000, 
+					8'b00000000};
 	
 	assign ri[15] = region[31:30];
 	assign ri[14] = region[29:28];
@@ -58,6 +68,7 @@ module sand_update(
 	
 	always_comb begin
 		shift = 0;
+		spoutform = 3'b000;
 		//FIRST PIXEL IN ROW
 		if (screenbegin) begin
 			if (ri[15] == SAND) begin
@@ -195,5 +206,11 @@ module sand_update(
 		
 		new_region = {ro[15], ro[14], ro[13], ro[12], ro[11], ro[10], ro[9], ro[8], ro[7], ro[6], ro[5], ro[4], ro[3], ro[2], ro[1], ro[0]};
 		new_floor = {fo[15], fo[14], fo[13], fo[12], fo[11], fo[10], fo[9], fo[8], fo[7], fo[6], fo[5], fo[4], fo[3], fo[2], fo[1], fo[0]};
+		
+		//SPOUT BLOCK
+		if (spout) begin
+			new_region[8:1] = spoutseq[spoutform];
+			spoutform = spoutform+1;
+		end
 	end
 endmodule
