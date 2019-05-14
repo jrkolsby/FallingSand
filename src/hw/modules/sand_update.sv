@@ -190,8 +190,9 @@ module sand_update(
 		new_floor = {fo[15], fo[14], fo[13], fo[12], fo[11], fo[10], fo[9], fo[8], fo[7], fo[6], fo[5], fo[4], fo[3], fo[2], fo[1], fo[0]};
 		
 		//SPOUT BLOCK
-		if (spout) begin
+		if (spout)
 			new_region[15:2] = 14'b01010101010101;
-		end
+		if(screenbottom) 
+			new_floor[31:0] = 32'b11111111111111111111111111111111;
 	end
 endmodule
