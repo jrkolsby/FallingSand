@@ -53,8 +53,6 @@ TARFILE = fallingsand.tar.gz
 # Run the topmost tcl script to generate the initial project files
 
 .PHONY : build
-build : $(BUILD)
-	
 $(BUILD) : $(RBF) $(DTB)
 	mkdir $(BUILD)
 	mv $(RBF) $(BUILD)

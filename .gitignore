@@ -1,4 +1,7 @@
 usr/
 build/
 src/hw/soc_system/
-src/hw/.qsys_edit/
+src/hw/db/
+src/hw/hps_isw_handoff/
+src/hw/incremental_db/
+src/hw/output_files/

@@ -1,6 +1,6 @@
 .PHONY demo:
 demo: playground/sand.py
-	python3 playground/sand.py
+	python playground/sand.py
 
 .PHONY hardware:
 hardware:

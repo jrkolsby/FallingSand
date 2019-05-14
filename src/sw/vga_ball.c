@@ -32,6 +32,7 @@
 #include <linux/fs.h>
 #include <linux/uaccess.h>
 #include "vga_ball.h"
+#include "usbkeyboard.h"
 
 #define DRIVER_NAME "sand_top"
 
@@ -41,6 +42,8 @@
 #define BG_BLUE(x) ((x)+2)
 #define BALL_X(x) ((x)+3)
 #define BALL_Y(x) ((x)+4)
+
+struct libusb_device_handle *keyboard;
 
 /*
  * Information about our device
@@ -128,7 +131,12 @@ static struct miscdevice vga_ball_misc_device = {
  * a welcome message
  */
 static int __init vga_ball_probe(struct platform_device *pdev)
-{
+{	
+	if ((keyboard = openkeyboard(&endpoint_address)) == NULL ) {
+		fprintf(stderr, "Did not find a keyboard\n");
+    		exit(1);
+  		}
+	
         vga_ball_color_t yellow = { 0xff, 0xbe, 0x03 };
 	int ret;
 
@@ -159,6 +167,96 @@ static int __init vga_ball_probe(struct platform_device *pdev)
 	/* Set an initial color */
         write_background(&yellow);
         write_coordinates();
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/* Look for and handle keypresses */
+	for (;;) {
+		libusb_interrupt_transfer(keyboard, endpoint_address,
+			      (unsigned char *) &packet, sizeof(packet),
+			      &transferred, 0);
+		if (transferred == sizeof(packet)) {
+			sprintf(keystate, "%02x %02x %02x", packet.modifiers, packet.keycode[0],
+			packet.keycode[1]);
+			printf("%s\n", keystate);
+			fbputs(keystate, 0, 56);
+			if (packet.keycode[0] == 0x29) { /* ESC pressed? */
+				fbclear();
+				break;
+			}
+			if (packet.keycode[0] == 0x28) { //Enter
+				int r, c;
+				char message_out[BUFFER_SIZE];
+
+				fbprint(message);
+
+				strncpy(message_out, message[0], BUFFER_SIZE/2);
+				strncpy(message_out+BUFFER_SIZE/2, message[1], BUFFER_SIZE/2);
+
+				send_to_server(message_out);
+
+				for (c = 0; c < 64; c++) {
+					for (r = 0; r < 2; r++) {
+						message[r][c] = ' ';
+					}
+				}
+
+				for (r = 22; r < 24; r++) {
+					for (c = 0; c < 64; c++) {
+						fbputchar(' ', r, c);
+					}
+				}
+
+				fbputchar('_', 22, 0);
+				incol = 0;
+				inrow = 22;
+				startfix = 0;
+			}      
+
+			if (packet.keycode[0] == 0x2a) { //Bksp
+				if ((inrow == 23) & (incol == 0)) { 
+					message[1][0] = ' ';
+					message[0][63] = '_';
+					fbputchar(' ', 23, 0);
+					fbputchar('_', 22, 63);
+					inrow = 22;
+					incol = 63;
+				}
+				else if (incol >  0) {
+					message[inrow-22][incol] = ' ';
+					message[inrow-22][incol-1] = '_';
+					fbputchar(' ', inrow, incol);
+					fbputchar('_', inrow, incol-1);
+					incol--;
+				}
+				goto bksp_skip;
+			}
+
+			if (startfix == 0) {
+				incol = 0;
+				startfix = 1;
+			}
+			char in = getkey(keystate);
+			if ((in != '\0') & (in != lastchar)) {
+				if (incol < 63) {
+					message[inrow-22][incol] = in;
+					fbputchar(in, inrow, incol);
+					fbputchar('_', inrow, incol + 1);
+					incol++;
+				}
+				else if ((incol == 63) & (inrow == 22)){
+					message[0][63] = in;
+					fbputchar(in, 22, 63);
+					fbputchar('_', 23, 0);
+					incol = 0;
+					inrow = 23;
+				}
+			}
+			lastchar = in;
+			fbputchar(getkey(keystate), 0, 54);
+			bksp_skip:;
+	}
+}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	return 0;
 

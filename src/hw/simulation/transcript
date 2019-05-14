@@ -1,0 +1,47 @@
+# OpenFile sand_top.mpf
+# Loading project sand_top
+vsim work.sand_update
+# vsim work.sand_update 
+# Start time: 12:19:29 on May 14,2019
+# Loading sv_std.std
+# Loading work.sand_update
+add wave  \
+sim:/sand_update/region \
+sim:/sand_update/floor \
+sim:/sand_update/new_region \
+sim:/sand_update/new_floor
+force -freeze sim:/sand_update/region 01010101000000000101010100000000 0
+force -freeze sim:/sand_update/floor 00000000010101010000000001010101 0
+run
+quit -sim
+# End time: 12:20:43 on May 14,2019, Elapsed time: 0:01:14
+# Errors: 0, Warnings: 0
+# Compile of sand_top.sv was successful.
+# Compile of vga_render.sv was successful.
+# Compile of sand_update.sv was successful.
+# Compile of soc_system_top.sv was successful.
+# 4 compiles, 0 failed with no errors.
+vsim work.sand_update
+# vsim work.sand_update 
+# Start time: 12:20:52 on May 14,2019
+# Loading sv_std.std
+# Loading work.sand_update
+add wave  \
+sim:/sand_update/region \
+sim:/sand_update/floor \
+sim:/sand_update/new_region \
+sim:/sand_update/new_floor
+noforce sim:/sand_update/region
+force -freeze sim:/sand_update/region 01010101000000000101010100000000 0
+force -freeze sim:/sand_update/floor 00000000010101010000000001010101 0
+run
+add wave  \
+sim:/sand_update/screenbegin \
+sim:/sand_update/screenend \
+sim:/sand_update/screenbottom
+force -freeze sim:/sand_update/screenbegin 1 0
+force -freeze sim:/sand_update/screenend 0 0
+force -freeze sim:/sand_update/screenbottom 0 0
+run
+# End time: 12:23:13 on May 14,2019, Elapsed time: 0:02:21
+# Errors: 0, Warnings: 0
