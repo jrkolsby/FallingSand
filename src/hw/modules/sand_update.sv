@@ -73,6 +73,10 @@ module sand_update(
 				end
 			end else if (ri[15] == SAND_AM)
 				ro[15] = SAND;
+			else begin
+				ro[15] = ri[15];
+				fo[15] = fi[15];
+			end
 			for (i=14; i>8; i=i-1) begin
 				//
 				if (ri[i] == SAND) begin
