@@ -52,18 +52,26 @@ module sand_top(
     assign floor_address_b = region_address_b + 24'd80;
 
     logic [5:0] state_counter;
+    logic [4:0] buffer_counter;
 
-    logic screenbegin;
-    logic screenbottom;
-    logic screenend;
+    assign buffer_counter = state_counter / 2;
     
-    logic [6:0] screen_x;
-    logic [6:0] screen_y;
+    logic [8:0] screen_x;
+    logic [8:0] screen_y;
+
+    logic screenend;	// End of column
+    logic screenbegin;	// Beginning of column
+    logic screenbottom; // Bottom of screen
+
+    assign screenbegin = screen_x == 9'b0;
+    assign screenbottom = (screen_y == 9'd481);
 
     // SUB MODULES
     vga_render render(
 	.buffer({region_buffer_a, region_buffer_b}),
-	.*
+	.buffer_ptr(buffer_counter),
+	.end_of_line(screenend),
+	.* // screen_x and screen_y
     );
 
     sand_update physics(
@@ -71,7 +79,7 @@ module sand_top(
 	.floor({floor_buffer_a, floor_buffer_b}),
 	.new_region({new_region_buffer_a, new_region_buffer_b}),
 	.new_floor({new_floor_buffer_a, new_floor_buffer_b}),
-	.*
+	.* // screenbegin, screenbottom, screenend
     );
 
     always_ff @(posedge clock) begin

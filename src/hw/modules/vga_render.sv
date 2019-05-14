@@ -10,14 +10,17 @@ module vga_render(
 	input logic reset,
 
 	input logic [31:0] buffer,
+	input logic [4:0] buffer_ptr,
 
 	// WRITE STATE
 	input logic [10:0] write_x,
 	input logic [9:0] write_y, 
 	input logic [1:0] write_t,
 
-	output logic [6:0] screen_x,
-	output logic [6:0] screen_y,
+	output logic [8:0] screen_x,
+	output logic [8:0] screen_y,
+
+	output logic end_of_line,
 	
 	// VGA CONDUIT
 	output logic [7:0] VGA_R, VGA_G, VGA_B,
@@ -31,43 +34,56 @@ module vga_render(
 
     logic [10:0] current_x;	// current x of render
     logic [9:0] current_y;	// current y of render
+    logic [1:0] screen_t;	// current type of render
 
-    assign screen_x = current_x[10:3];
-    assign screen_y = current_y[9:2];
+    assign screen_x = current_x[10:1];
+    assign screen_y = current_y[9:0];
 
     // outputs screen_x, screen_y
     vga_counters counters(
 	.clk50(clock), 
 	.screen_x(current_x),
 	.screen_y(current_y),
-	.*);
-
-    logic [1:0] buffer_index;
-    assign buffer_index = screen_x % 4;
+	.line_end(end_of_line),
+	.*
+    );
 
     always_comb begin
-
-	// set outputs depending on screen_x and screen_y
 	if (screen_x == write_x && screen_y == write_y)
-	    case (write_t)
+	    screen_t = write_t;
+	else begin
+	    case (buffer_ptr)
+		4'd0 : screen_t = buffer[1:0];
+		4'd1 : screen_t = buffer[3:2];
+		4'd2 : screen_t = buffer[5:4];
+		4'd3 : screen_t = buffer[7:6];
+		4'd4 : screen_t = buffer[9:8];
+		4'd5 : screen_t = buffer[11:10];
+		4'd6 : screen_t = buffer[13:12];
+		4'd7 : screen_t = buffer[15:14];
+		4'd8 : screen_t = buffer[17:16];
+		4'd9 : screen_t = buffer[19:18];
+		4'd10 : screen_t = buffer[21:20];
+		4'd11 : screen_t = buffer[23:22];
+		4'd12 : screen_t = buffer[25:24];
+		4'd13 : screen_t = buffer[27:26];
+		4'd14 : screen_t = buffer[29:28];
+		4'd15 : screen_t = buffer[31:30];
+	    endcase
+	    case (screen_t)
 		2'h0 : {VGA_R, VGA_G, VGA_B} = EMPTY_C;
 		2'h1 : {VGA_R, VGA_G, VGA_B} = SAND_C;
 		2'h2 : {VGA_R, VGA_G, VGA_B} = SAND_C;
 		2'h3 : {VGA_R, VGA_G, VGA_B} = WALL_C;
 	    endcase
-	else 
-	    case (buffer[buffer_index])
-		2'h0 : {VGA_R, VGA_G, VGA_B} = EMPTY_C;
-		2'h1 : {VGA_R, VGA_G, VGA_B} = SAND_C;
-		2'h2 : {VGA_R, VGA_G, VGA_B} = SAND_C;
-		2'h3 : {VGA_R, VGA_G, VGA_B} = WALL_C;
-	    endcase
+	end
     end
 
 endmodule
 
 module vga_counters(
     input logic clk50, reset,
+    output logic line_end,
     output logic [10:0] screen_x,  // screen_x[10:1] is pixel column
     output logic [9:0]  screen_y,  // screen_y[9:0] is pixel row
     output logic VGA_CLK, VGA_HS, VGA_VS, VGA_BLANK_n, VGA_SYNC_n);
@@ -103,7 +119,7 @@ module vga_counters(
             VBACK_PORCH; // 525
 
     logic end_of_line;
-	 logic end_of_screen;
+    logic end_of_screen;
 	 
     always_ff @(posedge clk50 or posedge reset)
 	if (reset) screen_x <= 0;
@@ -111,6 +127,8 @@ module vga_counters(
 	else screen_x <= screen_x + 11'd1;
 
     assign end_of_line = screen_x == HTOTAL - 1;
+
+    assign line_end = end_of_line;
    
     always_ff @(posedge clk50 or posedge reset)
 	if (reset) screen_y <= 0;
