@@ -65,8 +65,15 @@ module sand_top(
     logic screenbegin;	// Beginning of column
     logic screenbottom; // Bottom of screen
 
+    assign screenend = ((region_address_a + 1) % 80 == 0);
+    assign screenbegin = (region_address_a % 80 == 0);
+    assign screenbottom = (region_address_a > 24'd38320)
+
+    /* 
+    // Can't set the computation inputs based on VGA. OUT OF SYNC
     assign screenbegin = screen_x == 9'b0;
     assign screenbottom = (screen_y == 9'd481);
+    */
 
     // SUB MODULES
     vga_render render(
