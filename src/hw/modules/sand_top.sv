@@ -28,6 +28,8 @@ module sand_top(
 	output logic VGA_SYNC_n
 );
 
+    parameter SPOUT = 1'b1;
+
     logic [10:0] write_x;
     logic [9:0] write_y;
     logic [1:0] write_t;
@@ -79,6 +81,7 @@ module sand_top(
 	.floor({floor_buffer_a, floor_buffer_b}),
 	.new_region({new_region_buffer_a, new_region_buffer_b}),
 	.new_floor({new_floor_buffer_a, new_floor_buffer_b}),
+	.spout(SPOUT),
 	.* // screenbegin, screenbottom, screenend
     );
 
