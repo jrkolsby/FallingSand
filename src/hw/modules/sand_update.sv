@@ -191,7 +191,7 @@ module sand_update(
 		
 		//SPOUT BLOCK
 		if (spout)
-			new_region[15:2] = 14'b01010101010101;
+			new_floor[15:0] = 16'b0101010101010101;
 		if(screenbottom) 
 			new_floor[31:0] = 32'b11111111111111111111111111111111;
 		//
