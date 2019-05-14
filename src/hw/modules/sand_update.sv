@@ -1,5 +1,4 @@
 module sand_update(
-	input logic docalculations,
 	input logic screenbegin,
 	input logic screenend,
 	input logic [31:0] region,
