@@ -9,6 +9,9 @@ module vga_render(
 	input logic clock,
 	input logic reset,
 
+	input logic readdatavalid,
+	input logic writeresponsevalid,
+
 	input logic [31:0] buffer,
 	input logic [4:0] buffer_ptr,
 
@@ -19,8 +22,6 @@ module vga_render(
 
 	output logic [8:0] screen_x,
 	output logic [8:0] screen_y,
-
-	output logic end_of_line,
 	
 	// VGA CONDUIT
 	output logic [7:0] VGA_R, VGA_G, VGA_B,
@@ -30,7 +31,9 @@ module vga_render(
 
     parameter EMPTY_C	= 24'hFFFFFF,
 	    SAND_C	= 24'h993300,   
-	    WALL_C	= 24'h333333;
+	    WALL_C	= 24'h333333,
+	    FLAG_C	= 24'hFF0000,
+	    FLAG2_C	= 24'h0000FF;
 
     logic [10:0] current_x;	// current x of render
     logic [9:0] current_y;	// current y of render
@@ -44,13 +47,12 @@ module vga_render(
 	.clk50(clock), 
 	.screen_x(current_x),
 	.screen_y(current_y),
-	.line_end(end_of_line),
 	.*
     );
 
-    always_comb begin
-	if (screen_x == write_x && screen_y == write_y)
-	    screen_t = write_t;
+    always_ff @(posedge clock) begin
+	if ((screen_x == write_x) && (screen_y == write_y))
+	    screen_t <= write_t;
 	else begin
 	    case (buffer_ptr)
 		4'd0 : screen_t = buffer[1:0];
@@ -70,20 +72,27 @@ module vga_render(
 		4'd14 : screen_t = buffer[29:28];
 		4'd15 : screen_t = buffer[31:30];
 	    endcase
-	    case (screen_t)
-		2'h0 : {VGA_R, VGA_G, VGA_B} = EMPTY_C;
-		2'h1 : {VGA_R, VGA_G, VGA_B} = SAND_C;
-		2'h2 : {VGA_R, VGA_G, VGA_B} = SAND_C;
-		2'h3 : {VGA_R, VGA_G, VGA_B} = WALL_C;
-	    endcase
 	end
+    end
+
+    always_comb begin
+	if (readdatavalid)
+	    {VGA_R, VGA_G, VGA_B} = FLAG_C;
+	else if (writeresponsevalid)
+	    {VGA_R, VGA_G, VGA_B} = FLAG2_C;
+	else case (screen_t)
+	    2'h0 : {VGA_R, VGA_G, VGA_B} = EMPTY_C;
+	    2'h1 : {VGA_R, VGA_G, VGA_B} = SAND_C;
+	    2'h2 : {VGA_R, VGA_G, VGA_B} = SAND_C;
+	    2'h3 : {VGA_R, VGA_G, VGA_B} = WALL_C;
+	    default : {VGA_R, VGA_G, VGA_B} = EMPTY_C;
+	endcase
     end
 
 endmodule
 
 module vga_counters(
     input logic clk50, reset,
-    output logic line_end,
     output logic [10:0] screen_x,  // screen_x[10:1] is pixel column
     output logic [9:0]  screen_y,  // screen_y[9:0] is pixel row
     output logic VGA_CLK, VGA_HS, VGA_VS, VGA_BLANK_n, VGA_SYNC_n);
@@ -127,8 +136,6 @@ module vga_counters(
 	else screen_x <= screen_x + 11'd1;
 
     assign end_of_line = screen_x == HTOTAL - 1;
-
-    assign line_end = end_of_line;
    
     always_ff @(posedge clk50 or posedge reset)
 	if (reset) screen_y <= 0;

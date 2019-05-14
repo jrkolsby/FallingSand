@@ -35,7 +35,7 @@
          type = "boolean";
       }
    }
-   element sand_top
+   element sand_top_0
    {
       datum _sortIndex
       {
@@ -43,6 +43,14 @@
          type = "int";
       }
       datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
+      }
+   }
+   element sand_top_0.kernel
+   {
+      datum _lockedAddress
       {
          value = "1";
          type = "boolean";
@@ -65,7 +73,7 @@
    {
       datum _lockedAddress
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
       datum baseAddress
@@ -168,7 +176,7 @@
  <parameter name="hideFromIPCatalog" value="false" />
  <parameter name="lockedInterfaceDefinition" value="" />
  <parameter name="maxAdditionalLatency" value="1" />
- <parameter name="projectName" value="" />
+ <parameter name="projectName" value="soc_system.qpf" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="0" />
  <parameter name="testBenchDutName" value="" />
@@ -176,11 +184,11 @@
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
- <interface name="dram" internal="sdram.wire" type="conduit" dir="end" />
  <interface name="hps" internal="hps_0.hps_io" type="conduit" dir="end" />
  <interface name="hps_ddr3" internal="hps_0.memory" type="conduit" dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
- <interface name="vga" internal="sand_top.vga" type="conduit" dir="end" />
+ <interface name="sdram_wire" internal="sdram.wire" type="conduit" dir="end" />
+ <interface name="vga" internal="sand_top_0.vga" type="conduit" dir="end" />
  <module name="clk_0" kind="clock_source" version="18.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -717,7 +725,7 @@
   <parameter name="usb_mp_clk_div" value="0" />
   <parameter name="use_default_mpu_clk" value="true" />
  </module>
- <module name="sand_top" kind="sand_top" version="1.0" enabled="1" />
+ <module name="sand_top_0" kind="sand_top" version="1.0" enabled="1" />
  <module
    name="sdram"
    kind="altera_avalon_new_sdram_controller"
@@ -725,7 +733,7 @@
    enabled="1">
   <parameter name="TAC" value="5.4" />
   <parameter name="TMRD" value="3" />
-  <parameter name="TRCD" value="20.0" />
+  <parameter name="TRCD" value="15.0" />
   <parameter name="TRFC" value="15.0" />
   <parameter name="TRP" value="15.0" />
   <parameter name="TWR" value="14.0" />
@@ -734,7 +742,7 @@
   <parameter name="columnWidth" value="8" />
   <parameter name="componentName" value="$${FILENAME}_sdram" />
   <parameter name="dataWidth" value="16" />
-  <parameter name="generateSimulationModel" value="false" />
+  <parameter name="generateSimulationModel" value="true" />
   <parameter name="initNOPDelay" value="0.0" />
   <parameter name="initRefreshCommands" value="2" />
   <parameter name="masteredTristateBridgeSlave" value="0" />
@@ -751,7 +759,7 @@
    kind="avalon"
    version="18.1"
    start="hps_0.h2f_lw_axi_master"
-   end="sand_top.kernel">
+   end="sand_top_0.kernel">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
@@ -759,14 +767,14 @@
  <connection
    kind="avalon"
    version="18.1"
-   start="sand_top.sdram_master"
+   start="sand_top_0.sdram_master"
    end="sdram.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="clock" version="18.1" start="clk_0.clk" end="sdram.clk" />
- <connection kind="clock" version="18.1" start="clk_0.clk" end="sand_top.clock" />
+ <connection kind="clock" version="18.1" start="clk_0.clk" end="sand_top_0.clock" />
  <connection
    kind="clock"
    version="18.1"
@@ -787,7 +795,7 @@
    kind="reset"
    version="18.1"
    start="clk_0.clk_reset"
-   end="sand_top.reset" />
+   end="sand_top_0.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
