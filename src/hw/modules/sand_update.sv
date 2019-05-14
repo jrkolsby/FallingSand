@@ -1,6 +1,7 @@
 module sand_update(
 	input logic screenbegin,
 	input logic screenend,
+	input logic screenbottom,
 	input logic [31:0] region,
 	input logic [31:0] floor,
 	output logic [31:0] new_region,
@@ -12,6 +13,7 @@ module sand_update(
 	logic[1:0] fo[15:0];
 	
 	logic shift;
+	logic[3:0] i;
 	
 	parameter AIR 	= 2'b00,
 		SAND	= 2'b01,
@@ -70,7 +72,7 @@ module sand_update(
 				end
 			end else if (ri[15] == SAND_AM)
 				ro[15] = SAND;
-			for (j=14; i>8; i=i-1) begin
+			for (i=14; i>8; i=i-1) begin
 				//
 				if (ri[i] == SAND) begin
 					if (fi[i] == AIR) begin
@@ -118,7 +120,7 @@ module sand_update(
 		
 		//GENERAL PHYSICS
 		for (i=15; i>0; i=i-1) begin
-			if (i>8) && (!screenbegin) begin
+			if ((i>8) && (!screenbegin)) begin
 				ro[i] = ri[i];
 				fo[i] = fi[i];
 			end else if (i<9) begin
