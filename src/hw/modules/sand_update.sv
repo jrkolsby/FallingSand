@@ -167,7 +167,7 @@ module sand_update(
 		end
 		
 		//LAST PIXEL IN ROW
-		else if (screenend) begin
+		if (screenend) begin
 			if (ri[0] == SAND) begin
 				if (fi[0] == AIR) begin
 					ro[0] = AIR;
