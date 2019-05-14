@@ -9,12 +9,15 @@ module vga_render(
 	input logic clock,
 	input logic reset,
 
-	input logic [15:0] buffer,
+	input logic [31:0] buffer,
 
 	// WRITE STATE
 	input logic [10:0] write_x,
 	input logic [9:0] write_y, 
 	input logic [1:0] write_t,
+
+	output logic [10:0] screen_x,
+	output logic [9:0] screen_y,
 	
 	// VGA CONDUIT
 	output logic [7:0] VGA_R, VGA_G, VGA_B,
@@ -27,11 +30,18 @@ module vga_render(
 	    WATER_C	= 24'h0000FF,   
 	    WALL_C	= 24'h333333;
 
-    logic [10:0] screen_x;	// current x of render
-    logic [9:0] screen_y;	// current y of render
+    logic [10:0] current_x;	// current x of render
+    logic [9:0] current_y;	// current y of render
+
+    assign screen_x = current_x;
+    assign screen_y = current_y;
 
     // outputs screen_x, screen_y
-    vga_counters counters(.clk50(clock), .*);
+    vga_counters counters(
+	.clk50(clock), 
+	.screen_x(current_x),
+	.screen_y(current_y),
+	.*);
 
     logic [1:0] buffer_index;
     assign buffer_index = screen_x % 4;

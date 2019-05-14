@@ -51,7 +51,14 @@ module sand_top(
     assign floor_address_a = region_address_a + 24'd80;
     assign floor_address_b = region_address_b + 24'd80;
 
-    logic [3:0] state_counter;
+    logic [4:0] state_counter;
+
+    logic screenbegin;
+    logic screenbottom;
+    logic screenend;
+    
+    logic [10:0] screen_x;
+    logic [9:0] screen_y;
 
     // SUB MODULES
     vga_render render(
@@ -60,10 +67,10 @@ module sand_top(
     );
 
     sand_update physics(
-	.region(region_buffer), 
-	.floor(floor_buffer),
-	.new_region(new_region_buffer),
-	.new_floor(new_floor_buffer),
+	.region({region_buffer_a, region_buffer_b}), 
+	.floor({floor_buffer_a, floor_buffer_b}),
+	.new_region({new_region_buffer_a, new_region_buffer_b}),
+	.new_floor({new_floor_buffer_a, new_floor_buffer_b}),
 	.*
     );
 
@@ -133,10 +140,10 @@ module sand_top(
 
 	    endcase
 
-	    if (state_counter == 5'd31)
+	    if (state_counter == 5'd31) begin
 		state_counter <= 5'd0;
-		region_address_a <= region_address_a + 24'h1
-	    else 
+		region_address_a <= region_address_a + 24'h1;
+	    end else 
 		state_counter <= state_counter + 5'd1;
 
 	end
