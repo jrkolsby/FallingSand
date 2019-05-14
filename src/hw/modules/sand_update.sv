@@ -187,9 +187,9 @@ module sand_update(
 			fo[0] = fi[0];
 		end
 		
-		for (k=15; k>=0; k=k-1) begin
-			new_region[k*2+1:k*2] = ro[k];
-			new_floor[k*2+1:k*2] = fo[k];
+		for (i=15; i>=0; i=i-1) begin
+			new_region[i*2+1:i*2] = ro[i];
+			new_floor[i*2+1:i*2] = fo[i];
 		end
 	end
 endmodule
