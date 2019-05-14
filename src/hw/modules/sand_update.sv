@@ -66,10 +66,9 @@ module sand_update(
 	assign fi[1] = floor[3:2];
 	assign fi[0] = floor[1:0];
 	
-	shift = 0;
-	spoutform = 3'b000;
-	
 	always_comb begin
+		shift = 0;
+		spoutform = 3'b000;
 		//FIRST PIXEL IN ROW
 		if (screenbegin) begin
 			if (ri[15] == SAND) begin
