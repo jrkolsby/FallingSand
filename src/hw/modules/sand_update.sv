@@ -52,7 +52,8 @@ module sand_update(
 	assign fi[0] = floor[1:0];
 	
 	always_comb begin
-		if (screenbegin) begin //leftmost pixel in row
+		//FIRST PIXEL IN ROW
+		if (screenbegin) begin
 			if (ri[15] == SAND) begin
 				if (fi[15] == AIR) begin
 					ro[15] = AIR;
@@ -65,18 +66,37 @@ module sand_update(
 					ro[15] = ri[15];
 					fo[15] = fi[15];
 				end
-			end
-				
-			else if (ri[15] == SAND_AM) //
+			end else if (ri[15] == SAND_AM)
 				ro[15] = SAND;
+		end else begin
+			ro[15] = ri[15];
+			fo[15] = fi[15];
 		end
 		
+		//GENERAL PHYSICS
 		for (i=15; i>0; i=i-1) begin
 
 		end
 		
-		else if (screenend) begin//rightmost pixel in row
-				
+		//LAST PIXEL IN ROW
+		else if (screenend) begin
+			if (ri[0] == SAND) begin
+				if (fi[0] == AIR) begin
+					ro[0] = AIR;
+					fo[0] = SAND_AM;
+				end else if (fi[1] == AIR) begin
+					ro[0] = AIR;
+					fo[0] = fi[0];
+					fo[1] = SAND_AM;
+				end else begin
+					ro[0] = ri[0];
+					fo[0] = fi[0];
+				end
+			end else if (ri[15] == SAND_AM)
+				ro[15] = SAND;
+		end else begin
+			ro[0] = ri[0];
+			fo[0] = fi[0];
 		end
 	end
 endmodule
