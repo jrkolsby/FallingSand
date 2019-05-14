@@ -9,22 +9,23 @@ module vga_render(
 	input logic clock,
 	input logic reset,
 
-	// SDRAM MASTER (4B)
+	// SRAM MASTER
 	output logic [23:0] mem_address,
 	output logic mem_read,
 	input logic mem_waitrequest,
 	input logic mem_readdatavalid,
-	input logic [31:0] mem_readdata,
+	input logic [15:0] mem_readdata,
 
-	// GLOBALS WIRE
-	input logic [31:0] screen_a_ptr,
-	input logic [31:0] screen_b_ptr,
+	// SRAM POINTERS
+	input logic [31:0] screen_ptr,
+
+	// WRITE STATE
 	input logic [10:0] write_x,
 	input logic [9:0] write_y, 
 	input logic [1:0] write_t,
 	input logic [1:0] write_radius,
 	
-	// VGA WIRE
+	// VGA CONDUIT
 	output logic [7:0] VGA_R, VGA_G, VGA_B,
 	output logic VGA_CLK, VGA_HS, VGA_VS, VGA_BLANK_n,
 	output logic VGA_SYNC_n
@@ -35,9 +36,8 @@ module vga_render(
 	    WATER_C	= 24'h0000FF,   
 	    WALL_C	= 24'h333333;
 
-    logic [15:0] read_buf;
+    logic [15:0] pixel_buf;
 
-    logic screen_toggle;	// 1 if screen_a_ptr
     logic mem_reading;		// 1 if waiting
     logic [16:0] mem_block;	// which block are we on?
     logic [10:0] screen_x;	// current x of render
@@ -46,10 +46,13 @@ module vga_render(
     // outputs screen_x, screen_y
     vga_counters counters(.clk50(clock), .*);
 
+    logic [1:0] buf_count;
+    assign buf_count = screen_x % 4;
+
     always_ff @(posedge clock) begin
 
 	// GET
-	if (screen_x % 4 == 0)
+	if (screen_x > 0 & buf_count == 0)
 	    mem_block <= mem_block + 17'd1;
 	    
 	// RESET DEFAULT VALUES
@@ -60,7 +63,7 @@ module vga_render(
 
 	// READ FROM SDRAM (2B)
 	end else if (mem_reading & mem_readdatavalid) begin
-	    read_buf <= mem_readdata;
+	    pixel_buf <= mem_readdata;
 	    mem_reading <= 1'b0;
 
 	// START NEW READ FROM SDRAM
@@ -81,7 +84,12 @@ module vga_render(
 		2'h3 : {VGA_R, VGA_G, VGA_B} = WALL_C;
 	    endcase
 	else 
-	    {VGA_R, VGA_G, VGA_B} = {8'd0, 8'd0, read_buf[7:0]}; 
+	    case (pixel_buf[buf_count])
+		2'h0 : {VGA_R, VGA_G, VGA_B} = EMPTY_C;
+		2'h1 : {VGA_R, VGA_G, VGA_B} = SAND_C;
+		2'h2 : {VGA_R, VGA_G, VGA_B} = WATER_C;
+		2'h3 : {VGA_R, VGA_G, VGA_B} = WALL_C;
+	    endcase
     end
 
 endmodule
@@ -123,7 +131,8 @@ module vga_counters(
             VBACK_PORCH; // 525
 
     logic end_of_line;
-   
+	 logic end_of_screen;
+	 
     always_ff @(posedge clk50 or posedge reset)
 	if (reset) screen_x <= 0;
 	else if (end_of_line) screen_x <= 0;

@@ -1,0 +1,58 @@
+# Loading project sand_top
+# Compile of sand_top.sv was successful.
+# Compile of vga_render.sv was successful.
+# Compile of sand_update.sv was successful.
+# Compile of soc_system_top.sv was successful.
+# 4 compiles, 0 failed with no errors.
+vsim work.sand_top -t ps
+# vsim work.sand_top -t ps 
+# Start time: 19:47:10 on May 13,2019
+# Loading sv_std.std
+# Loading work.sand_top
+# Loading work.vga_render
+# Loading work.vga_counters
+# Loading work.sand_update
+add wave  \
+sim:/sand_top/clock
+add wave  \
+sim:/sand_top/reset
+add wave  \
+sim:/sand_top/mem_address \
+sim:/sand_top/mem_read \
+sim:/sand_top/mem_write \
+sim:/sand_top/mem_waitrequest \
+sim:/sand_top/mem_readdatavalid \
+sim:/sand_top/mem_readdata \
+sim:/sand_top/mem_writedata
+add wave  \
+sim:/sand_top/write_x \
+sim:/sand_top/write_y \
+sim:/sand_top/write_radius \
+sim:/sand_top/write_t \
+sim:/sand_top/screen_select \
+sim:/sand_top/screen_a_ptr \
+sim:/sand_top/screen_b_ptr \
+sim:/sand_top/cacheselect \
+sim:/sand_top/screen_a_cache \
+sim:/sand_top/screen_b_cache \
+sim:/sand_top/screen_c_cache \
+sim:/sand_top/render_address \
+sim:/sand_top/physics_address \
+sim:/sand_top/render_flag \
+sim:/sand_top/render_read \
+sim:/sand_top/physics_read
+force -freeze sim:/sand_top/clock 1 0, 0 {50 ps} -r 100
+force -freeze sim:/sand_top/clock 1 0, 0 {50 ps} -r 100
+run
+force -freeze sim:/sand_top/render_flag 1 0
+force -drive sim:/sand_top/render_flag 1 0
+# ** Error: (vsim-3458) Cannot use the 'force -drive' command on a register.
+# 
+force -freeze sim:/sand_top/write_radius 10 0
+run
+run
+# Break key hit
+# Break key hit
+write format wave -window .main_pane.wave.interior.cs.body.pw.wf /home/james/Documents/Sand/src/hw/simulation/wave.do
+# End time: 19:54:26 on May 13,2019, Elapsed time: 0:07:16
+# Errors: 1, Warnings: 0

@@ -1,5 +1,5 @@
-HEIGHT = 10
-WIDTH = 10 
+HEIGHT = 9
+WIDTH = 9
 
 def update(screen):
     newscreen = [x.copy() for x in screen]

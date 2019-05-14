@@ -39,20 +39,7 @@
    {
       datum _sortIndex
       {
-         value = "2";
-         type = "int";
-      }
-      datum sopceditor_expanded
-      {
-         value = "1";
-         type = "boolean";
-      }
-   }
-   element sand_update
-   {
-      datum _sortIndex
-      {
-         value = "5";
+         value = "3";
          type = "int";
       }
       datum sopceditor_expanded
@@ -65,7 +52,7 @@
    {
       datum _sortIndex
       {
-         value = "3";
+         value = "2";
          type = "int";
       }
       datum sopceditor_expanded
@@ -167,19 +154,6 @@
          type = "String";
       }
    }
-   element vga_render
-   {
-      datum _sortIndex
-      {
-         value = "4";
-         type = "int";
-      }
-      datum sopceditor_expanded
-      {
-         value = "1";
-         type = "boolean";
-      }
-   }
 }
 ]]></parameter>
  <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
@@ -194,7 +168,7 @@
  <parameter name="hideFromIPCatalog" value="false" />
  <parameter name="lockedInterfaceDefinition" value="" />
  <parameter name="maxAdditionalLatency" value="1" />
- <parameter name="projectName" value="soc_system.qpf" />
+ <parameter name="projectName" value="" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="0" />
  <parameter name="testBenchDutName" value="" />
@@ -206,7 +180,7 @@
  <interface name="hps" internal="hps_0.hps_io" type="conduit" dir="end" />
  <interface name="hps_ddr3" internal="hps_0.memory" type="conduit" dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
- <interface name="vga" internal="vga_render.vga" type="conduit" dir="end" />
+ <interface name="vga" internal="sand_top.vga" type="conduit" dir="end" />
  <module name="clk_0" kind="clock_source" version="18.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -744,7 +718,6 @@
   <parameter name="use_default_mpu_clk" value="true" />
  </module>
  <module name="sand_top" kind="sand_top" version="1.0" enabled="1" />
- <module name="sand_update" kind="sand_update" version="1.0" enabled="0" />
  <module
    name="sdram"
    kind="altera_avalon_new_sdram_controller"
@@ -774,21 +747,6 @@
   <parameter name="registerDataIn" value="true" />
   <parameter name="rowWidth" value="12" />
  </module>
- <module name="vga_render" kind="vga_render" version="1.0" enabled="1">
-  <parameter name="EMPTY_C" value="16777215" />
-  <parameter name="SAND_C" value="10040064" />
-  <parameter name="WALL_C" value="3355443" />
-  <parameter name="WATER_C" value="255" />
- </module>
- <connection
-   kind="avalon"
-   version="18.1"
-   start="sand_update.avalon_master"
-   end="sdram.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
  <connection
    kind="avalon"
    version="18.1"
@@ -801,7 +759,7 @@
  <connection
    kind="avalon"
    version="18.1"
-   start="vga_render.sdram_master"
+   start="sand_top.sdram_master"
    end="sdram.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
@@ -809,8 +767,6 @@
  </connection>
  <connection kind="clock" version="18.1" start="clk_0.clk" end="sdram.clk" />
  <connection kind="clock" version="18.1" start="clk_0.clk" end="sand_top.clock" />
- <connection kind="clock" version="18.1" start="clk_0.clk" end="vga_render.clock" />
- <connection kind="clock" version="18.1" start="clk_0.clk" end="sand_update.clock" />
  <connection
    kind="clock"
    version="18.1"
@@ -832,16 +788,6 @@
    version="18.1"
    start="clk_0.clk_reset"
    end="sand_top.reset" />
- <connection
-   kind="reset"
-   version="18.1"
-   start="clk_0.clk_reset"
-   end="vga_render.reset" />
- <connection
-   kind="reset"
-   version="18.1"
-   start="clk_0.clk_reset"
-   end="sand_update.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

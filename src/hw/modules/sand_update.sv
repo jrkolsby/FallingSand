@@ -1,24 +1,35 @@
 module sand_update(
 	input logic clock,
 	input logic reset,
-	output logic [22:0] address,
-	output logic read,
-	output logic write,
-	input logic waitrequest,
-	input logic [7:0] readdata,
-	output logic [7:0] writedata
+
+	input logic [31:0] screen_ptr,
+
+	output logic [23:0] mem_address,
+	output logic mem_read,
+	output logic mem_write,
+	input logic mem_waitrequest,
+	input logic mem_readdatavalid,
+	input logic [15:0] mem_readdata,
+	output logic [15:0] mem_writedata,
+
+	input logic [15:0] region,
+	input logic [15:0] floor,
+	output logic [15:0] new_region,
+	output logic [15:0] new_floor
     );
-    
-    logic [7:0] hcount;
-    logic [7:0] vcount;
 
-    logic [17:0] particle_kernel;
+    logic [16:0] write_block = 17'd0;
 
-/*
-    always_ff @(posedge clk) begin
-	logic addr = scene_addr
+    always_ff @(posedge clock) begin
+	if (mem_waitrequest == 1'b1) begin
+	    mem_write <= 1'd0; 
+	    write_block <= write_block + 17'd1;
+	end else begin
+	    mem_address <= write_block;
+	    mem_write <= 1'd1;
+	    mem_writedata <= 16'h2222;
+	end
     end
-*/
 
 endmodule
 
