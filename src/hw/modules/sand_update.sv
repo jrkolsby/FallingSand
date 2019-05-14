@@ -125,7 +125,7 @@ module sand_update(
 		
 		//GENERAL PHYSICS
 		for (i=15; i>0; i=i-1) begin
-			if ((i>8) && (!screenbegin)) begin
+			if (i>8) begin
 				ro[i] = ri[i];
 				fo[i] = fi[i];
 			end else if (i<9) begin
